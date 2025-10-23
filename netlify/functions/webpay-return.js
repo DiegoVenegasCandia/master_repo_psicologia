@@ -13,7 +13,11 @@ exports.handler = async function (event) {
       };
     }
 
-    const transbankBase = process.env.WEBPAY_API_URL || 'https://webpay3gint.transbank.cl/rswebpaytransaction/api/webpay/v1.0/transactions';
+    const transbankBase = process.env.WEBPAY_API_URL;
+    if (!transbankBase) {
+      console.error('Missing WEBPAY_API_URL');
+      return { statusCode: 500, body: 'Server misconfiguration: WEBPAY_API_URL missing' };
+    }
     const verifyUrl = `${transbankBase}/${encodeURIComponent(token)}`;
 
     // Intentamos commit/verify (PUT o GET según la API; aquí usamos PUT que es el flujo común para commit)

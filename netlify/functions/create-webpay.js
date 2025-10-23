@@ -27,7 +27,11 @@ exports.handler = async function (event) {
     }
 
     // Endpoint REST de Webpay (init transaction)
-    const transbankApiUrl = process.env.WEBPAY_API_URL || 'https://webpay3gint.transbank.cl/rswebpaytransaction/api/webpay/v1.0/transactions';
+    const transbankApiUrl = process.env.WEBPAY_API_URL;
+    if (!transbankApiUrl) {
+      console.error('Missing WEBPAY_API_URL');
+      return { statusCode: 500, body: 'Server misconfiguration: WEBPAY_API_URL missing' };
+    }
     const reqBody = { buy_order, session_id, amount, return_url };
 
     const resp = await fetch(transbankApiUrl, {
