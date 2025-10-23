@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Camila Hernández - Psicóloga Clínica</title>
+  <meta name="description" content="Camila Hernández, psicóloga clínica. Atención online para adolescentes y adultos: ansiedad, autoestima, relaciones y desarrollo personal. Reserva tu sesión y paga de forma segura." />
+  <meta name="keywords" content="psicóloga, terapia online, ansiedad, autoestima, desarrollo personal, Camila Hernández" />
+  <link rel="canonical" href="http://localhost/index.html" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Camila Hernández - Psicóloga Clínica" />
+  <meta property="og:description" content="Atención online para adolescentes y adultos. Reserva tu sesión y paga de forma segura." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="http://localhost/index.html" />
+  <meta property="og:image" content="./assets/bg-hero.webp" />
+
+  <!-- JSON-LD (Organization / Person minimal) -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Person",
+    "name":"Camila Hernández",
+    "jobTitle":"Psicóloga",
+    "url":"http://localhost/index.html",
+    "description":"Psicóloga con atención online. Sesiones individuales."
+  }
+  </script>
+
+  <!-- Fuentes, Bootstrap, FontAwesome -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Flatpickr (calendario estilizado) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+  <link rel="stylesheet" href="./style.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="./assets/bg-hero.webp" as="image">
+
+  <!-- Favicon / icono de pestaña (usar assets/logo.png) -->
+  <link rel="icon" href="./assets/logo.png?v=2" type="image/png" sizes="32x32">
+  <link rel="icon" href="./assets/logo.png?v=2" type="image/png" sizes="16x16">
+  <link rel="shortcut icon" href="./assets/logo.png?v=2" type="image/png">
+  <link rel="apple-touch-icon" href="./assets/logo.png?v=2">
+  <link rel="mask-icon" href="./assets/logo.png?v=2" color="#00a99d">
+  <meta name="msapplication-TileImage" content="./assets/logo.png?v=2">
+  <meta name="theme-color" content="#00a99d">
+  <!-- Fin favicon -->
+</head>
+<body>
+  <!-- HEADER: botones de navegación rápida -->
+  <header class="site-header">
+    <div class="container-lg header-inner">
+      <div class="header-left">
+        <a href="#sobre-mi" class="logo-link" aria-label="Ir a Sobre mí">
+          <img src="./assets/logo.png" alt="Logo" class="logo" width="160" height="64">
+        </a>
+      </div>
+      <nav class="header-nav" aria-label="Navegación principal">
+        <button class="nav-btn" data-target="sobre-mi">Sobre mí</button>
+        <button class="nav-btn" data-target="areas">Áreas de atención</button>
+        <button class="nav-btn" data-target="servicios">Agendar</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO BLOCK (añadir id="sobre-mi") -->
+  <section id="sobre-mi" class="block-hero">
+    <div class="block-bg" data-speed="0.20" aria-hidden="true"></div>
+
+    <div class="container-lg text-center py-4">
+     <h1>Camila Hernández</h1>
+     <p class="lead">Psicóloga • Atención Online</p>
+    </div>
+
+    <div class="container-lg">
+      <div class="hero-content row align-items-center py-5">
+        <div class="col-md-4 text-center">
+          <div class="hero-photo card p-3 shadow-sm mx-auto" style="max-width:360px;">
+            <img src="./assets/camila.png" alt="Camila Hernández" class="foto-camila img-fluid rounded" loading="lazy" width="360" height="480">
+          </div>
+        </div>
+
+        <div class="col-md-8">
+          <div class="text-panel">
+            <h2>Sobre mí</h2>
+
+            <!-- panel 1: excerpt (visible por defecto) -->
+            <div id="sobre-excerpt" class="content-panel" aria-hidden="false">
+              <p><strong>Hola soy Camila Hernández</strong></p>
+
+              <p>
+                Soy Psicóloga egresada de la Universidad de Magallanes, cuento con experiencia en intervenciones psicoeducativas y un fuerte enfoque en el acompañamiento terapéutico de adolescentes y adultos.
+              </p>
+
+              <p>
+                Mi práctica se caracteriza por una comunicación empática y efectiva, lo que me permite generar vínculos sólidos y espacios seguros para el desarrollo personal.
+              </p>
+
+              <div class="mt-2">
+                <button id="btn-mas-sobre" class="btn btn-outline-primary btn-sm">Más sobre mi</button>
+              </div>
+            </div>
+
+            <!-- panel 2: more (oculto por defecto) -->
+            <div id="sobre-more" class="content-panel" aria-hidden="true" style="display:none;">
+              <p><strong>Fuera de la consulta 😎</strong></p>
+              <p>
+                Al igual que muchas de mis pacientes, en algún momento perdí el foco en la vida. Fue gracias al pole dance, disciplina que practico hace algunos años, que logré reconectar con una parte de mí misma que no conocía: <em>fuerte, libre y auténtica</em>.
+              </p>
+              <p>
+                Hoy, esa experiencia personal me inspira a acompañar a otras mujeres en sus propios procesos de transformación.
+              </p>
+
+              <div class="mt-2">
+                <button id="btn-menos-sobre" class="btn btn-outline-secondary btn-sm">Volver</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INFO BLOCK (tres imágenes) - añadir id="areas" -->
+  <section id="areas" class="block-info">
+    <div class="block-bg" data-speed="0.08" aria-hidden="true"></div>
+    <div class="container-lg my-5">
+      <div class="row text-center">
+        <div class="col-md-4 mb-4">
+          <div class="recorte posicion-porque mx-auto" style="max-width:320px;">
+            <img src="./assets/porque.png"
+                 alt="Por qué atenderte"
+                 loading="lazy"
+                 width="320" height="427"
+                 style="width:100%;height:100%;object-fit:cover;">
+          </div>
+          <h3 class="mt-3">¿Por qué atenderte conmigo?</h3>
+          <p>El acompañamiento psicológico permite reconocer tus fortalezas y explorar recursos frente a lo que te preocupa. Es un espacio para ser tú.</p>
+        </div>
+
+        <div class="col-md-4 mb-4">
+          <div class="recorte posicion-quienes mx-auto" style="max-width:320px;">
+            <img src="./assets/quienes.png"
+                 alt="Quiénes se atienden"
+                 loading="lazy"
+                 width="320" height="427"
+                 style="width:100%;height:100%;object-fit:cover;">
+          </div>
+          <h3 class="mt-3">¿Quiénes se atienden conmigo?</h3>
+          <p>Adolescentes y adultos que buscan apoyo para conocerse mejor, fortalecer su autoestima y mejorar sus relaciones.</p>
+        </div>
+
+        <div class="col-md-4 mb-4">
+          <div class="recorte posicion-como mx-auto" style="max-width:320px;">
+            <img src="./assets/como.png"
+                 alt="Cómo lo logramos"
+                 loading="lazy"
+                 width="320" height="427"
+                 style="width:100%;height:100%;object-fit:cover;">
+          </div>
+          <h3 class="mt-3">¿Cómo lo logramos?</h3>
+          <p>Trabajamos con herramientas que impulsan el autoconocimiento, el bienestar y el desarrollo personal.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES: id correcto -->
+  <section id="servicios" class="bg-white">
+    <div class="container-lg text-center">
+      <h2 class="mb-4">Servicios</h2>
+      <div class="card mx-auto" style="max-width: 420px;">
+        <div class="card-body">
+          <h5 class="card-title">Sesión de acompañamiento psicológica</h5>
+          <p class="card-text">Sesión individual online, duración aproximada de 50 minutos.</p>
+          <p class="fs-4 fw-bold text-primary" id="precio-servicio">$30.000</p>
+          <a href="#form-cita" class="btn btn-outline-primary">Agendar ahora</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-light py-5" id="form-cita-section">
+    <div class="container-lg">
+      <h2 class="text-center mb-4">Agenda tu cita</h2>
+      <form id="form-cita" class="row g-3" novalidate>
+        <div class="col-md-6">
+          <label for="nombre" class="form-label">Nombre completo</label>
+          <input type="text" class="form-control" id="nombre" required>
+        </div>
+        <div class="col-md-6">
+          <label for="email" class="form-label">Correo electrónico</label>
+          <input type="email" class="form-control" id="email" required>
+        </div>
+        <div class="col-md-6">
+          <label for="fecha" class="form-label">Fecha</label>
+          <div class="date-wrapper">
+            <input type="text" id="fecha" class="form-control flatpickr-input" placeholder="Selecciona fecha" aria-label="Fecha" required>
+            <i class="fa fa-calendar calendar-icon" aria-hidden="true"></i>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label for="hora" class="form-label">Hora</label>
+          <select class="form-select" id="hora" required>
+            <option value="">Selecciona una hora</option>
+            <option>10:00</option>
+            <option>11:30</option>
+            <option>14:00</option>
+            <option>16:00</option>
+          </select>
+        </div>
+        <div class="col-12 text-center">
+          <button id="btn-reservar" type="submit" class="btn btn-primary">
+            <span id="btn-text">Reservar cita</span>
+            <span id="btn-spinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+          </button>
+        </div>
+      </form>
+      <div id="confirmacion" class="mt-3 text-success text-center" role="status" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="text-center py-5">
+    <h2>Pago seguro</h2>
+    <p>Realiza el pago de tu sesión a través de Webpay o MercadoPago.</p>
+    <div class="d-flex justify-content-center gap-2">
+      <button id="btn-webpay" data-price="30000" class="btn">Pagar con Webpay</button>
+      <button id="btn-mercadopago" class="btn btn-warning" data-price="30000">Pagar con MercadoPago</button>
+    </div>
+    <p class="small text-muted mt-2">Simulación: implementación completa requiere credenciales y backend.</p>
+  </section>
+
+  <section class="text-center py-4">
+    <a href="https://api.whatsapp.com/send/?phone=56939456619" target="_blank" class="btn btn-success">
+      <i class="fab fa-whatsapp me-2"></i> Agendar por WhatsApp
+    </a>
+    <small class="d-block mt-2 text-muted">En línea</small>
+  </section>
+
+  <footer class="text-center py-4 bg-dark text-white">
+    <p>&copy; 2025 Camila Hernández. Todos los derechos reservados.</p>
+  </footer>
+
+  <!-- flatpickr JS + locale -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- EmailJS SDK (si usas EmailJS) -->
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script>
+    // Inicializa EmailJS si corresponde (reemplaza por tu key pública)
+    if (window.emailjs) {
+      try { emailjs.init('AlEkFVEA9mwdEcFcp'); } catch (e) { /* no bloquear si falla */ }
+    }
+  </script>
+
+  <!-- Tu script (defer para asegurar que el DOM y librerías estén listas) -->
+  <script src="./script.js" defer></script>
+
+  <noscript>
+    <style>
+      .block-hero .block-bg::before {
+        background-image: url('./assets/bg-hero.jpg') !important;
+        filter: none !important;
+        transform: none !important;
+      }
+    </style>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Resultado Webpay</title>
+  <style>
+    body{font-family:Inter,system-ui,Arial;padding:2rem;background:#f7fdfa;color:#033; }
+    pre{background:#fff;border:1px solid #e6f1ef;padding:1rem;border-radius:6px;overflow:auto}
+  </style>
+</head>
+<body>
+  <h1>Resultado del pago (simulación)</h1>
+  <p>Webpay te redirige aquí con parámetros. En producción debes validar el estado en backend.</p>
+  <div id="out"><em>Cargando parámetros...</em></div>
+
+  <script>
+    function parseQuery() {
+      const params = Object.fromEntries(new URLSearchParams(location.search));
+      return params;
+    }
+    const out = document.getElementById('out');
+    const params = parseQuery();
+    out.innerHTML = '<pre>' + JSON.stringify(params, null, 2) + '</pre>';
+  </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+# Local Netlify folder
+.netlify
+
+# local env files
+.env
+
+node_modules/
+.vscode/
+.DS_Store
+dist/
+build/
+netlify/functions/node_modules/

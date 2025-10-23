@@ -1,0 +1,1300 @@
+/* CSS limpiado y consolidado: variables, base, header, hero, foto, panels y responsive */
+
+/* Variables */
+:root{
+  --primary-color:#2c3e50;
+  --calipso:#0aa6a0;
+  --calipso-strong:rgba(10,166,160,0.95);
+  --muted:#5a6b75;
+  --bg-soft:#f6fbfb;
+  --shadow:0 8px 30px rgba(3,40,40,0.06);
+  --radius:12px;
+}
+
+/* Reset / base */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:Inter, "Segoe UI", sans-serif;
+  background:linear-gradient(180deg,#fbfefc 0%,var(--bg-soft) 100%);
+  color:var(--primary-color);
+  -webkit-font-smoothing:antialiased;
+}
+
+/* Header */
+.site-header{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  width:100%;
+  z-index:12000 !important;
+  background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.95));
+  backdrop-filter:blur(2px);
+  -webkit-backdrop-filter:blur(2px);
+  box-shadow:none;
+}
+.header-inner{display:flex;align-items:center;justify-content:space-between;padding:0 1rem}
+.header-nav{display:flex;gap:.6rem}
+.nav-btn{
+  background:transparent;border:1px solid rgba(10,166,160,0.12);
+  color:rgba(6,50,50,0.92);padding:.45rem .85rem;border-radius:999px;
+  font-weight:600;cursor:pointer;transition:all .16s ease;
+}
+.nav-btn:hover{background:rgba(10,166,160,0.06);transform:translateY(-1px)}
+.nav-btn.active{
+  background:linear-gradient(180deg,var(--calipso-strong),var(--calipso));
+  color:#fff;border-color:rgba(10,166,160,0.95);box-shadow:0 8px 20px rgba(10,166,160,0.08);
+}
+
+/* Logo */
+.logo{max-width:220px;width:100%;display:block;height:auto;margin:0}
+
+/* Hero layout */
+.block-hero{position:relative;padding:1.6rem 0 2.4rem;overflow:visible}
+.block-bg{position:absolute;inset:0;z-index:0;pointer-events:none}
+.block-bg::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url('./assets/bg-hero.jpg');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  /* usar 'scroll' para evitar problemas en móvil; si quieres parallax rígido, pon 'fixed' */
+  background-attachment: scroll;
+}
+.block-hero > .container-lg, .block-hero .hero-content{position:relative;z-index:2}
+
+/* hero content columns */
+.hero-content{display:flex;align-items:flex-start;gap:2rem;flex-wrap:nowrap}
+.hero-content > .col-md-4{flex:0 0 360px;max-width:360px;width:360px}
+.hero-content > .col-md-8{flex:1 1 auto}
+
+/* hero photo card */
+.hero-photo{
+  background:rgba(255,255,255,0.95);border-radius:var(--radius);
+  padding:.6rem;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;
+}
+.foto-camila{
+  display:block;width:100%;max-width:100%;height:auto;border-radius:var(--radius);
+  object-fit:cover;
+}
+
+/* text panel */
+.text-panel{
+  background:rgba(255,255,255,0.86);padding:1.1rem 1.4rem;border-radius:var(--radius);
+  box-shadow:var(--shadow);color:rgba(6,50,50,0.94);line-height:1.52;font-size:.98rem;
+  display:flex;flex-direction:column;justify-content:flex-start;overflow:visible;
+  max-width:720px;
+}
+.text-panel h2{margin:0 0 .6rem 0;color:#083737;font-weight:700}
+.text-panel p{margin:0 0 .6rem 0;color:#234241}
+
+/* dos paneles independientes dentro del text-panel */
+.content-panel{
+  width:100%;
+  /* ocupar la altura dictada por JS/inline; si no, usar auto */
+  box-sizing:border-box;
+  display:flex;flex-direction:column;
+  overflow:auto;
+}
+
+/* area de contenido interna para poder scrollear sin expandir el panel */
+.content-body{flex:1 1 auto;overflow:auto;padding-right:8px}
+
+/* botones */
+.btn{
+  border-radius:999px;
+  padding:.35rem .9rem;
+  font-size:.95rem;
+  border:1px solid rgba(10,166,160,0.95);
+  background:transparent;
+  color:var(--calipso-strong);
+}
+.btn-outline-primary{color:var(--calipso);border-color:var(--calipso)}
+.btn-container{margin-top:.8rem;display:flex;gap:.5rem;align-items:center}
+
+/* util: ocultar/mostrar */
+.hidden{display:none !important}
+
+/* scrollbar sutil */
+.content-panel::-webkit-scrollbar{width:8px}
+.content-panel::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.07);border-radius:6px}
+.content-panel{scrollbar-width:thin;scrollbar-color:rgba(0,0,0,0.07) transparent}
+
+/* responsive */
+@media(max-width:992px){
+  .hero-content{flex-direction:column;align-items:center}
+  .hero-content > .col-md-4,.hero-content > .col-md-8{width:100%;max-width:100%;flex:none}
+  .text-panel{width:100%;padding:1rem}
+  .logo{max-width:180px}
+}
+@media(max-width:768px){
+  .block-hero{padding-top:.8rem;padding-bottom:1rem}
+  .hero-photo{margin-bottom:.8rem}
+  .foto-camila{max-width:360px}
+}
+
+/* End of cleaned CSS */
+/* Variables CSS para mejor mantenimiento */
+:root {
+  --primary-color: #2c3e50;
+  --bg-color: #f8f9fa;
+  --shadow: 0 2px 6px rgba(0,0,0,0.08);
+  --border-radius: 8px;
+  --calipso: #0aa6a0;
+  --calipso-strong: rgba(10,166,160,0.95);
+  --muted: #5a6b75;
+  --bg-soft: #f6fbfb; /* tono muy suave para fondo */
+}
+
+/* Estilos base */
+body {
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  background: linear-gradient(180deg, #fbfefc 0%, var(--bg-soft) 100%);
+  color: #23303a;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* Logo y encabezado */
+.logo {
+  max-width: 220px;
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Imágenes */
+img {
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  transition: transform 0.25s ease;
+}
+
+img:hover {
+  transform: scale(1.02);
+}
+
+section img {
+  object-fit: cover;
+}
+
+/* Titulares */
+h1, h2, h3 {
+  color: var(--primary-color);
+}
+
+/* Foto de Camila */
+.foto-camila {
+  max-width: 480px;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+  display: block;
+}
+
+/* Recortes para cards */
+.recorte {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: var(--border-radius);
+  position: relative;
+  margin: 0 auto;
+}
+
+.recorte img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Ajustes de encuadre */
+.posicion-porque img { object-position: center top; }
+.posicion-quienes img { object-position: center 40%; }
+.posicion-como img { object-position: center; }
+
+/* Espaciado */
+.col-md-4 h3 { margin-top: 1rem; }
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .logo { max-width: 180px; }
+  .foto-camila { max-width: 360px; }
+}
+
+/* No forzar .container; usamos container-lg en HTML.
+   Opcional: ajustar límites para container-lg si hace falta */
+.container-lg {
+  max-width: 1100px;
+}
+
+/* Pequeños ajustes visuales */
+.lead { color: #5a6b75; }
+.card-body .text-primary { color: var(--primary-color) !important; }
+
+footer {
+  padding: 1.5rem 0;
+  background: #23282b;
+  color: #e6f0ef;
+}
+
+/* Estilo mejorado para input fecha / flatpickr */
+input[type="date"],
+.flatpickr-input {
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: #fff;
+  border: 1px solid #e6eaee;
+  border-radius: 8px;
+  padding: .5rem .9rem;
+  padding-right: 3.2rem; /* espacio para icono */
+  box-shadow: none;
+  transition: border-color .15s ease, box-shadow .15s ease;
+  width: 100%;
+  max-width: 100%;
+  color: #23303a;
+}
+
+input[type="date"]:focus,
+.flatpickr-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 18px rgba(44,62,80,0.06);
+}
+
+/* Wrapper para input fecha con icono */
+.date-wrapper {
+  position: relative;
+}
+.date-wrapper .calendar-icon {
+  position: absolute; /* <-- punto y coma corregido */
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #0aa6a0; /* calipso */
+  font-size: 18px;
+  pointer-events: none;
+}
+
+/* asegurar espacio para el icono */
+.flatpickr-input {
+  padding-right: 3rem;
+  background-color: #fff;
+  border-radius: 8px;
+}
+
+/* Flatpickr - tema calipso (fondo suave + acentos) */
+.flatpickr-calendar {
+  border-radius: 12px;
+  box-shadow: 0 18px 50px rgba(6,40,42,0.08);
+  border: 0;
+  font-family: inherit;
+  background: linear-gradient(180deg, #f7fdfe 0%, #eef9f8 100%); /* fondo pastel calipso */
+  color: #0b4040;
+}
+
+.flatpickr-months .flatpickr-month {
+  background: transparent;
+  color: #083737;
+}
+
+.flatpickr-current-month .cur-month {
+  color: #07383a;
+  font-weight: 600;
+}
+
+.flatpickr-prev-month, .flatpickr-next-month {
+  color: #0aa6a0; /* acento calipso */
+}
+
+.flatpickr-weekday {
+  color: #4a6362;
+  font-weight: 700;
+}
+
+.flatpickr-day {
+  border-radius: 8px;
+}
+
+.flatpickr-day.today {
+  background: rgba(10,166,160,0.10);
+  color: #07383a;
+  font-weight: 600;
+}
+
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange {
+  background: #0aa6a0 !important; /* calipso */
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.flatpickr-day:hover {
+  background: rgba(10,166,160,0.12);
+  color: #07383a;
+}
+
+.flatpickr-day.disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* asegurar espacio y visibilidad en pantallas grandes */
+@media (min-width: 1200px) {
+  .flatpickr-calendar {
+    min-width: 360px;
+  }
+}
+
+/* icono clicable (si lo activaste en JS) */
+.date-wrapper .calendar-icon {
+  pointer-events: auto;
+}
+
+/* BLOQUES con fondo parallax ligero */
+.block-hero,
+.block-info {
+  position: relative;
+  overflow: visible;
+}
+
+/* capa de fondo que se moverá con scroll (parallax) */
+.block-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  transform: translate3d(0,0,0);
+  will-change: transform;
+}
+
+/* fondo visual: uso de degradados suaves que armonizan con "calipso" */
+.block-hero .block-bg {
+  background: transparent;
+}
+
+.block-hero .block-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url('./assets/bg-hero.jpg');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  /* usar 'scroll' para evitar problemas en móvil; si quieres parallax rígido, pon 'fixed' */
+  background-attachment: scroll;
+}
+
+.block-hero .block-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.00) 0%,
+    rgba(10,166,160,0.03) 40%,
+    rgba(255,255,255,0.00) 100%);
+}
+
+/* panel de texto en hero para mejor contraste sin ocultar fondo */
+.hero-content .text-panel {
+  display: inline-block;
+  background: rgba(255,255,255,0.78);
+  padding: 1rem 1.2rem;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(3,40,40,0.08);
+  color: #093434;
+  max-width: 720px;
+}
+
+/* aplicar el panel al bloque de texto (usa en HTML si quieres) */
+.block-hero .hero-content h2,
+.block-hero .hero-content p {
+  color: #083737;
+}
+.block-hero .hero-content h2 { margin-bottom: .6rem; }
+
+/* hacer que la tarjeta de la foto destaque menos y mejor integrada */
+.hero-photo {
+  background: rgba(255,255,255,0.92);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(2,30,30,0.06);
+}
+
+/* ---- Block-info: tonos más contenidos y sombras suaves ---- */
+.block-info {
+  background: linear-gradient(180deg, rgba(240,255,254,0.6), rgba(255,255,255,0.95));
+}
+
+.block-info .recorte {
+  /* tamaño armonizado ya reducido; asegurar sombra discreta */
+  box-shadow: 0 12px 30px rgba(6,60,60,0.04);
+  border-radius: 10px;
+}
+
+/* títulos y textos del block-info con tono más cálido/muted */
+.block-info h3 {
+  color: #0b4040;
+  font-weight: 600;
+}
+.block-info p {
+  color: #516b69;
+  margin-top: .5rem;
+  max-width: 36ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ---- Separadores / franjas ---- */
+main > section {
+  border-top: 1px solid rgba(10,166,160,0.06);
+}
+main > section:first-of-type { border-top: none; }
+
+/* enfatizar la franja antes del bloque "Servicios" (ya existente) */
+section.bg-white {
+  background: #ffffff;
+}
+
+/* ---- Inputs / botones ---- */
+.flatpickr-input, input.form-control, .form-select {
+  border-radius: 8px;
+  border: 1px solid #e6eaee;
+}
+.btn-primary {
+  background: linear-gradient(180deg,var(--calipso-strong),var(--calipso));
+  border-color: rgba(10,166,160,0.95);
+  box-shadow: 0 8px 20px rgba(10,166,160,0.08);
+}
+
+/* ---- Footer ---- */
+footer {
+  background: #23282b;
+  color: #e6f0ef;
+}
+
+/* ---- Mejor resposividad: reducir hero padding en mobile ---- */
+@media (max-width: 768px) {
+  .block-hero { padding-top: 0.8rem; padding-bottom: 1rem; }
+  .hero-content .text-panel { display: block; width: 100%; padding: .9rem; }
+  .hero-photo { margin-bottom: .8rem; }
+}
+
+/* asegurar espacio y visibilidad en pantallas grandes */
+@media (min-width: 1200px) {
+  .flatpickr-calendar {
+    min-width: 360px;
+  }
+}
+
+/* Integración webp + @2x para bg-hero (fallback jpg incluido) */
+.block-hero .block-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: url('./assets/bg-hero.jpg'); /* fallback */
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.03);
+  filter: blur(6px) saturate(95%);
+  opacity: 0.95;
+  will-change: transform, opacity;
+}
+
+/* navegadores modernos: preferir webp con image-set */
+@supports (background-image: image-set(url('./assets/bg-hero.webp') 1x)) {
+  .block-hero .block-bg::before {
+    background-image: image-set(
+      url('./assets/bg-hero.webp') 1x,
+      url('./assets/bg-hero@2x.webp') 2x
+    );
+  }
+}
+
+/* retina fallback para navegadores que no soportan image-set */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .block-hero .block-bg::before {
+    background-image: url('./assets/bg-hero@2x.webp');
+    background-size: cover;
+  }
+}
+
+/* reducir blur/escala en móviles por rendimiento */
+@media (max-width: 768px) {
+  .block-hero .block-bg::before {
+    transform: scale(1.01);
+    filter: blur(3px) saturate(95%);
+  }
+}
+
+/* FIX: corregir hero — quitar banda blanca, mejorar contraste y centrar contenido */
+.block-hero {
+  /* un poco más de espacio y limpieza */
+  padding-top: 1.6rem;
+  padding-bottom: 2.4rem;
+  overflow: visible;
+}
+
+/* asegurar que el fondo use el webp y no el jpg viejo; reducir blur y escala */
+.block-hero .block-bg::before {
+  background-image: url('./assets/bg-hero.webp') !important;
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.01) !important;
+  filter: blur(3px) saturate(96%) !important;
+  opacity: 0.92 !important;
+  will-change: transform, opacity;
+  /* eliminar cualquier borde extraño */
+  border: 0 !important;
+}
+
+/* hacer overlay mucho más sutil para que el contenido sea legible */
+.block-hero .block-bg::after {
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.00) 0%,
+    rgba(10,166,160,0.03) 40%,
+    rgba(255,255,255,0.00) 100%) !important;
+  mix-blend-mode: normal;
+  opacity: 1;
+  pointer-events: none;
+}
+
+/* centrar verticalmente el contenido del hero y mantener legibilidad */
+.block-hero > .container-lg,
+.block-hero .hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.block-hero .hero-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 2rem;
+  flex-wrap: nowrap;
+  /* ajustar según necesidad */
+}
+
+.block-hero .hero-content > .col-md-4 {
+  flex: 0 0 360px;
+  max-width: 360px;
+  width: 360px;
+}
+
+.block-hero .hero-content > .col-md-8 {
+  flex: 1 1 auto;
+  max-width: none;
+}
+
+/* texto del hero: contraste y visibilidad */
+.block-hero .hero-content h1,
+.block-hero .hero-content h2,
+.block-hero .hero-content p {
+  color: rgba(6,50,50,0.92);
+  text-shadow: none;
+}
+
+/* suavizar la tarjeta/foto para integrarla mejor */
+.hero-photo {
+  background: rgba(255,255,255,0.95);
+  box-shadow: 0 18px 40px rgba(6,60,60,0.06);
+  border-radius: 12px;
+  padding: 0.6rem;
+}
+
+/* eliminar posible franja visible por pseudo-elementos previos */
+.block-hero::after,
+.block-hero .block-bg[style*="bg-hero.jpg"]::before,
+.block-hero .block-bg[style*="rgba(255,255,255,0.85)"]::after {
+  /* mantener la regla sólo para forzar prioridad si es necesario */
+  display: block;
+}
+
+/* si queda alguna línea inferior, cubrirla con el fondo del siguiente bloque */
+.block-info {
+  background: linear-gradient(180deg, rgba(240,255,254,0.62), rgba(255,255,255,0.98));
+}
+
+/* Ajustes de color y legibilidad para hero y bloques después de añadir texto */
+.block-hero .text-panel {
+  background: rgba(255,255,255,0.80); /* suave, permite ver el fondo */
+  padding: 1.1rem 1.4rem;
+  border-radius: 12px;
+  max-width: 720px;
+  margin-left: 0;
+  margin-right: 0;
+  color: rgba(6,50,50,0.94);
+  box-shadow: 0 12px 30px rgba(3,40,40,0.06);
+  line-height: 1.52;
+  font-size: 0.98rem;
+}
+
+/* encabezado y destaque */
+.block-hero .text-panel h2 {
+  color: #083737;
+  margin-bottom: 0.45rem;
+  font-weight: 700;
+}
+
+/* párrafo del subtítulo "Fuera de la consulta" */
+.block-hero .text-panel p strong {
+  color: var(--calipso);
+  font-weight: 700;
+}
+
+/* ajustar color y lectura de los párrafos del hero sobre la imagen */
+.block-hero .text-panel p {
+  color: #234241;
+  opacity: 0.95;
+  margin-bottom: 0.6rem;
+}
+
+/* Block-info: textos ligeramente más oscuros para contraste sobre la franja suave */
+.block-info h3 {
+  color: #0a4442;
+}
+.block-info p {
+  color: #436765;
+  opacity: 0.95;
+  line-height: 1.5;
+}
+
+/* reducir sombra excesiva bajo la franja entre bloques */
+main > section {
+  border-top: 1px solid rgba(10,166,160,0.05);
+}
+
+/* responsive: panel ocupa 100% ancho en móviles con padding cómodo */
+@media (max-width: 768px) {
+  .block-hero .text-panel {
+    width: 100%;
+    padding: 1rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* responsive */
+@media (max-width: 768px) {
+  .block-hero .hero-content { flex-direction: column; min-height: 300px; gap: 1rem; }
+  .hero-photo { margin-bottom: .2rem; }
+}
+
+/* Ajustes para que el hero no tape el block-info, centrar imágenes en móvil
+   y asegurar que los títulos estén siempre encima de las imágenes. */
+
+/* Reducir espacio vertical del hero para que el fondo no se extienda demasiado */
+.block-hero {
+  position: relative;
+  overflow: visible;
+  padding-top: 1.2rem;    /* menos espacio arriba */
+  padding-bottom: 1.0rem; /* menos espacio abajo para evitar solapados */
+}
+
+/* Forzar que la capa de fondo del hero quede detrás */
+.block-hero .block-bg,
+.block-hero .block-bg::before,
+.block-hero .block-bg::after {
+  position: absolute;
+  inset: 0;
+  z-index: 0 !important;
+  pointer-events: none;
+}
+
+/* Asegurar que el bloque info esté por encima del fondo del hero */
+.block-info {
+  position: relative;
+  z-index: 2; /* debe estar por encima de .block-bg (z-index:0) */
+  /* conservar su fondo existente */
+}
+
+/* Recortes / tarjetas de imagen deben estar encima del fondo y no generar solapados */
+.recorte {
+  position: relative;
+  z-index: 3;
+  margin: 0 auto 1rem; /* espacio inferior para separar del título */
+  overflow: hidden;
+}
+
+/* Asegurar que los headings queden siempre visibles por encima de la imagen */
+.col-md-4 h3 {
+  position: relative;
+  z-index: 4;
+  margin-top: .8rem;
+  text-align: center;
+  display: block;
+}
+
+/* Cuando el layout baja a móvil: centrar las columnas y las imágenes */
+@media (max-width: 992px) {
+  .block-info .row { justify-content: center; }
+  .block-info .col-md-4 {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .recorte { margin-left: auto; margin-right: auto; }
+  .recorte img { margin: 0 auto; display: block; }
+  .col-md-4 h3 { margin-top: .9rem; }
+}
+
+/* pequeño ajuste para evitar que el fondo del hero oscurezca el texto dentro de las cards */
+.block-info .recorte,
+.block-info .recorte img,
+.block-info h3,
+.block-info p {
+  background: transparent;
+}
+
+/* ---- Consolidated hero background & fixes (sin propiedades sueltas) --- */
+.block-hero {
+  position: relative;
+  overflow: visible;
+  padding-top: 1.6rem;
+  padding-bottom: 2.4rem;
+}
+
+.block-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  transform: translate3d(0,0,0);
+  will-change: transform;
+}
+
+/* Preferir webp, con fallback a jpg si existe */
+.block-hero .block-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: url('./assets/bg-hero.webp');
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.01);
+  filter: blur(3px) saturate(96%);
+  opacity: 0.92;
+  will-change: transform, opacity;
+}
+
+/* Overlay sutil */
+.block-hero .block-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(255,255,255,0.00) 0%, rgba(10,166,160,0.03) 40%, rgba(255,255,255,0.00) 100%);
+}
+
+/* Asegurar contenido encima */
+.block-hero > .container-lg,
+.block-hero .hero-content,
+.block-hero .text-panel {
+  position: relative;
+  z-index: 2;
+}
+
+/* Text-panel (estilos ya existentes, mantenidos limpias) */
+.text-panel {
+  position: relative;
+  display: block;
+  overflow: visible;
+  padding: 1rem 1.2rem;
+  box-sizing: border-box;
+}
+
+/* asegurar h2 con margen controlado */
+.text-panel h2 { margin: 0 0 0.6rem 0; }
+
+/* el contenedor switcher tendrá su altura fijada desde JS */
+.switcher {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* stacked content: ocupan todo el switcher (se muestran/ocultan por opacidad) */
+.switcher .excerpt,
+.switcher .more-content {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: auto;
+  max-height: 0; /* inicial: cerrado */
+  opacity: 0;
+  transform: translateY(6px);
+  transition: max-height .42s ease, opacity .32s ease, transform .32s ease;
+  padding-right: 6px; /* espacio para scrollbar visible */
+}
+
+/* estado visible para excerpt */
+.switcher .excerpt.visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* estado visible para more */
+.switcher .more-content.open {
+  opacity: 1;
+  transform: none;
+}
+
+/* cuando se expande, el JS ajusta max-heights individuales */
+#btn-mas-sobre.hidden { opacity: 0; pointer-events: none; transition: opacity .24s ease; }
+
+/* asegurar botón 'Volver' dentro del flujo y con espacio */
+#btn-menos-sobre { display: inline-block; margin-top: .6rem; z-index: 2; }
+
+/* Responsivo: en móviles el panel toma todo el ancho y se apila */
+@media (max-width: 992px) {
+  .hero-content { flex-direction: column; align-items: center; }
+  .hero-content > .col-md-4 { width: 100%; max-width: 360px; }
+  .hero-content > .col-md-8 { width: 100%; }
+  .text-panel { width: 100%; }
+}
+
+/* Header fijo y botones de navegación */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1100;
+  background: linear-gradient(180deg, rgba(10,166,160,0.06), rgba(255,255,255,0.80));
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(10,166,160,0.04);
+  padding: 0.18rem 0; /* menor altura */
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.header-nav {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+/* nav buttons */
+.nav-btn {
+  background: transparent;
+  border: 1px solid rgba(10,166,160,0.12);
+  color: rgba(6,50,50,0.92);
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background .16s ease, transform .08s ease, box-shadow .12s ease;
+}
+.nav-btn:hover {
+  background: rgba(10,166,160,0.06);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(10,166,160,0.04);
+}
+.nav-btn.active {
+  background: linear-gradient(180deg,var(--calipso-strong),var(--calipso));
+  color: white;
+  border-color: rgba(10,166,160,0.95);
+  box-shadow: 0 8px 20px rgba(10,166,160,0.08);
+}
+
+/* en pantallas pequeñas: header compacto */
+@media (max-width: 768px) {
+  .header-inner { gap: 0.6rem; }
+  .header-nav { gap: 0.4rem; }
+  .nav-btn { padding: 0.35rem 0.6rem; font-size: .9rem; }
+  .logo { max-width: 140px; }
+}
+
+/* Compact header + dynamic logo positioning (reemplaza overrides anteriores) */
+.site-header{
+  padding: 0.06rem 0 !important;
+  box-shadow: none;
+  background: linear-gradient(180deg, rgba(10,166,160,0.04), rgba(255,255,255,0.92));
+  /* dejar que la altura se adapte (JS ajustará min-height) */
+  min-height: unset !important;
+}
+.header-inner{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.5rem;
+  height:auto; /* no forzar altura fija */
+  padding:0 .75rem !important;
+}
+.logo{
+  max-width:140px !important;
+  width:auto;
+  height:auto;
+  display:block;
+  margin:0;
+  padding:.15rem .25rem;
+  background:rgba(255,255,255,0.6);
+  border-radius:8px;
+  box-shadow:0 6px 18px rgba(2,30,30,0.04);
+  z-index:1200;
+}
+.logo img{
+  display:block;
+  max-width:100%;
+  max-height:64px; /* límite visual; JS usará el tamaño real para calcular */
+  height:auto;
+  width:auto;
+  object-fit:contain;
+  margin-top:0; /* JS ajustará si es necesario */
+  transition: margin .18s ease;
+}
+
+/* responsive */
+@media(max-width:768px){
+  .logo{ max-width:120px; padding:.08rem .18rem }
+  .logo img{ max-height:48px }
+  .site-header{ padding:.04rem 0 !important; }
+  .header-inner{ padding:0 .6rem !important; gap:.4rem }
+  .nav-btn{ padding:.22rem .45rem; font-size:.86rem }
+}
+
+/* FIX: mantener header siempre visible y evitar que otros elementos con transform lo oculten */
+.site-header{
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 2147483647 !important; /* lo más alto posible */
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.95));
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  box-shadow: none;
+}
+
+/* reservar espacio para el header (script.js ya actualiza --header-height) */
+:root{ --header-height: 0px; }
+body{ padding-top: var(--header-height); transition: padding-top .18s ease; }
+
+/* Muchos elementos con transform crean stacking contexts que pueden "recortar" un fixed.
+   Quitamos transforms en los contenedores principales que suelen usarse en tu layout. */
+.block-hero,
+.hero-content,
+.container,
+.container-lg,
+.hero-photo,
+.content-panel,
+.block-bg {
+  transform: none !important;
+  -webkit-transform: none !important;
+  -moz-transform: none !important;
+  backface-visibility: visible !important;
+  will-change: auto !important;
+}
+
+/* Asegurar que el logo y navegación sigan sobre el contenido */
+.site-header, .site-header * { z-index: 2147483647 !important; }
+
+/* pequeños ajustes responsive si hace falta */
+@media (max-width: 768px){
+  .site-header{ position: fixed !important; }
+  body{ padding-top: var(--header-height); }
+}
+
+/* quitar margen / fondo blanco alrededor de imágenes y wrappers */
+img,
+.logo,
+.logo img,
+.hero-photo,
+.hero-photo img,
+.foto-camila,
+.recorte,
+.recorte img,
+.recorte .recorte-img {
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+}
+
+/* mantener bordes redondeados visuales pero evitar fondo blanco del contenedor */
+.recorte { overflow: hidden; background: transparent !important; }
+
+/* asegurar que las imágenes no dejen espacios blancos y ocupen su contenedor */
+img { display: block; max-width: 100%; height: auto; }
+/* Quitar cualquier borde/outline/fondo/box-shadow residual alrededor de imágenes */
+.hero-photo,
+.hero-photo img,
+.recorte,
+.recorte img,
+.foto-camila,
+img,
+.logo,
+.logo img,
+.card,
+.card img {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  outline: none !important;
+  content: none !important;
+}
+
+/* Por si existe un pseudo-elemento que dibuja ese rectángulo */
+.hero-photo::before,
+.recorte::before,
+.hero-photo::after,
+.recorte::after {
+  display: none !important;
+  content: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+/* añadir fondo calipso al bloque "Servicios" */
+.services-section{
+  background: linear-gradient(180deg, var(--calipso) 0%, rgba(10,166,160,0.94) 100%) !important;
+  color: #fff !important;
+  padding: 2.4rem 0 !important;
+}
+.services-section h2,
+.services-section h3 { color: #ffffff !important; }
+.services-section p,
+.services-section .lead { color: rgba(255,255,255,0.92) !important; }
+.services-section .btn,
+.services-section .nav-btn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #fff;
+}
+.services-section .btn-primary {
+  background: #ffffff !important;
+  color: var(--calipso) !important;
+  border-color: #ffffff !important;
+}
+.services-section .container-lg { position: relative; z-index: 2; }
+/* Forzar fondo "calipso" en el bloque de servicios */
+#servicios,
+#servicios.services-section,
+.services-section {
+  background: linear-gradient(180deg, var(--calipso, #0aa6a0) 0%, rgba(10,166,160,0.94) 100%) !important;
+  color: #ffffff !important;
+  padding: 2.4rem 0 !important;
+}
+
+/* Asegurar que la card interna sea transparente y el texto visible */
+#servicios .card,
+#servicios .card-body {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: inherit !important;
+}
+
+/* Botón principal: fondo blanco, texto calipso */
+#servicios .btn,
+#servicios .btn-outline-primary {
+  background: #ffffff !important;
+  color: var(--calipso, #0aa6a0) !important;
+  border-color: #ffffff !important;
+}
+
+/* Titulares y párrafos */
+#servicios h2,
+#servicios h5 { color: #ffffff !important; }
+#servicios p,
+#servicios .card-text { color: rgba(255,255,255,0.92) !important; }
+/* Estilos para el botón reservar y mensaje de confirmación */
+
+
+/* hover / focus (activo visual consistente con otros botones) */
+
+
+/* estado deshabilitado: claro pero identificable, sin bloquear pointer-events (JS controla atributo) */
+
+
+/* spinner pequeño dentro del botón */
+
+
+/* confirmación (aparecer debajo del botón) */
+#confirmacion p{
+  display:inline-block;
+  margin-top:.6rem;
+  padding:.4rem .9rem;
+  border-radius:8px;
+  background: rgba(255,255,255,0.06);
+  color:#fff;
+  font-weight:700;
+}
+
+/* estilos para el botón secundario en la sección de servicios */
+#servicios .btn-outline-primary{
+  display:inline-block;
+  background:#ffffff !important;
+  color:var(--calipso) !important;
+  border-color:#ffffff !important;
+  padding:.45rem 1rem;
+  border-radius:999px;
+  cursor:pointer;
+  transform:translateY(0);
+  transition: transform .18s cubic-bezier(.2,.9,.3,1), box-shadow .18s cubic-bezier(.2,.9,.3,1), opacity .12s ease;
+  will-change: transform, box-shadow;
+  text-decoration:none;
+}
+
+/* hover / focus: elevación y sombra */
+#servicios .btn-outline-primary:hover,
+#servicios .btn-outline-primary:focus{
+  transform:translateY(-6px);
+  box-shadow:0 14px 36px rgba(10,166,160,0.12);
+  outline: 3px solid rgba(10,166,160,0.10);
+  outline-offset:4px;
+}
+
+/* active (clic): pequeño hundimiento */
+#servicios .btn-outline-primary:active{
+  transform:translateY(-2px);
+  box-shadow:0 8px 20px rgba(10,166,160,0.10);
+}
+
+/* Reglas únicas para #btn-reservar — usar variables / estilos existentes */
+#btn-reservar {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.5rem;
+  min-width:160px;
+  padding:.55rem 1.2rem;
+  border-radius:999px;
+  border:0;
+  background: linear-gradient(180deg,var(--calipso-strong),var(--calipso));
+  color:#ffffff !important;
+  font-weight:700;
+  box-shadow:0 10px 30px rgba(10,166,160,0.14);
+  transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+  cursor:pointer;
+  pointer-events:auto;
+  z-index: 999;
+}
+
+/* Hover / focus */
+#btn-reservar:not([disabled]):hover {
+  transform: translateY(-2px);
+  box-shadow:0 14px 36px rgba(10,166,160,0.16);
+}
+
+/* Deshabilitado (visual claro y sin interacción) */
+#btn-reservar[disabled] {
+  background: linear-gradient(180deg, rgba(10,166,160,0.10), rgba(10,166,160,0.04));
+  color: rgba(255,255,255,0.9) !important;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Zona final: asegurar estilo activo de btn-reservar y evitar overrides */
+#btn-reservar {
+  background: linear-gradient(180deg, var(--calipso-strong), var(--calipso)) !important;
+  color: #fff !important;
+  pointer-events: auto !important;
+  opacity: 1 !important;
+  border: 0 !important;
+  box-shadow: 0 10px 30px rgba(10,166,160,0.14) !important;
+}
+
+/* estado deshabilitado (visual claro) */
+#btn-reservar[disabled] {
+  pointer-events: none !important;
+  opacity: 0.9 !important;
+  filter: none !important;
+  box-shadow: none !important;
+  background: linear-gradient(180deg, rgba(10,166,160,0.10), rgba(10,166,160,0.04)) !important;
+  color: rgba(255,255,255,0.95) !important;
+}
+
+/* mensajes de validación inline y confirmación */
+.input-error {
+  color: #d9534f; /* rojo bootstrap */
+  font-size: .92rem;
+  margin-top: .35rem;
+}
+input.is-invalid,
+select.is-invalid {
+  border-color: #d9534f !important;
+  box-shadow: 0 0 0 0.12rem rgba(217,83,79,0.06) !important;
+}
+
+/* confirmación debajo del botón */
+#confirmacion .confirm-error {
+  color: #d9534f;
+  font-weight: 700;
+  margin: .5rem 0 0;
+}
+#confirmacion .confirm-success {
+  color: var(--calipso);
+  font-weight: 700;
+  margin: .5rem 0 0;
+}
+
+/* Ajustes responsivos y pequeños fixes visuales */
+.block-hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.block-hero .block-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('./assets/bg-hero.webp');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.12;
+  transform: translateZ(0);
+  z-index: 0;
+}
+
+/* Asegurar contenido por encima del fondo */
+.block-hero .container-lg { position: relative; z-index: 1; }
+
+/* Foto y panel en móvil: stack */
+@media (max-width: 767.98px) {
+  .hero-content .col-md-4,
+  .hero-content .col-md-8 {
+    flex: 0 0 100%;
+    max-width: 100%;
+    text-align: center;
+  }
+  .hero-photo { margin-bottom: 1rem; max-width: 320px; }
+}
+
+/* Icono calendario dentro del input */
+.date-wrapper { position: relative; }
+.calendar-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6c757d;
+  pointer-events: none;
+}
+
+/* Mejor contraste para botones en el footer/hero */
+.btn-outline-primary { border-color: #0d6efd; }
+/* Variable por defecto (por si JS no corre de inmediato) */
+:root { --header-height: 80px; }
+
+/* Asegurar que los saltos por ancla respeten el header */
+section, header, .block-hero, #form-cita-section, #areas, #servicios {
+  scroll-margin-top: calc(var(--header-height) + 12px);
+}
+
+
