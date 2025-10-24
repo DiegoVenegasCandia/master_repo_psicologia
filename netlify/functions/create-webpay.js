@@ -4,7 +4,8 @@ const fetch = (...args) => import('node-fetch').then(({ default: f }) => f(...ar
 
 exports.handler = async function (event) {
   try {
-    console.log('create-webpay invoked', { method: event.httpMethod, envHasCreds: !!process.env.WEBPAY_COMMERCE_CODE });
+    console.log('create-webpay invoked', { method: event.httpMethod });
+
     if (event.httpMethod !== 'POST') {
       return { statusCode: 405, body: 'Method Not Allowed' };
     }
@@ -14,11 +15,10 @@ exports.handler = async function (event) {
     const buy_order = `order-${Date.now()}`;
     const session_id = `sess-${Math.random().toString(36).slice(2, 10)}`;
 
-    // Usar SOLO las env vars (no valores por defecto)
-    const return_url = process.env.WEBPAY_RETURN_URL;
     const apiBase = process.env.WEBPAY_API_URL;
     const commerce = process.env.WEBPAY_COMMERCE_CODE;
     const apiKey = process.env.WEBPAY_API_KEY;
+    const return_url = process.env.WEBPAY_RETURN_URL;
 
     if (!apiBase || !commerce || !apiKey || !return_url) {
       console.error('Missing WEBPAY env vars', { apiBase: !!apiBase, commerce: !!commerce, apiKey: !!apiKey, return_url: !!return_url });
@@ -43,6 +43,7 @@ exports.handler = async function (event) {
 
     console.log('create-webpay response', { status: resp.status, data });
 
+    // Normaliza la respuesta para el frontend: { status, body }
     return {
       statusCode: resp.ok ? 200 : 502,
       headers: { 'Content-Type': 'application/json' },

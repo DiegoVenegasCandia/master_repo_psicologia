@@ -18,23 +18,26 @@ exports.handler = async function (event) {
     }
 
     const apiBase = process.env.WEBPAY_API_URL;
-    if (!apiBase || !process.env.WEBPAY_COMMERCE_CODE || !process.env.WEBPAY_API_KEY) {
+    const commerce = process.env.WEBPAY_COMMERCE_CODE;
+    const apiKey = process.env.WEBPAY_API_KEY;
+
+    if (!apiBase || !commerce || !apiKey) {
       const html = `<!doctype html><html><body>
         <h1>Token recibido: ${token}</h1>
         <p>No hay credenciales configuradas para verificar con Transbank.</p>
+        <pre>${JSON.stringify(qs, null, 2)}</pre>
       </body></html>`;
       return { statusCode: 200, headers: { 'Content-Type': 'text/html' }, body: html };
     }
 
-    // Verificación/commit: endpoint según API (transactions/{token})
     const verifyUrl = `${apiBase}/transactions/${encodeURIComponent(token)}`;
 
     const resp = await fetch(verifyUrl, {
-      method: 'PUT', // confirma el método en la doc de Transbank; puede ser PUT o POST según la versión
+      method: 'PUT', // confirma con la doc de la versión que usas
       headers: {
         'Content-Type': 'application/json',
-        'Tbk-Api-Key-Id': process.env.WEBPAY_COMMERCE_CODE,
-        'Tbk-Api-Key-Secret': process.env.WEBPAY_API_KEY
+        'Tbk-Api-Key-Id': commerce,
+        'Tbk-Api-Key-Secret': apiKey
       }
     });
 
