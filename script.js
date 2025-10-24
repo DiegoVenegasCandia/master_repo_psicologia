@@ -968,4 +968,58 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
   });
+
+  // Añade esto en el archivo JS que controla el botón de pago (reemplaza el selector si es necesario)
+  async function iniciarPago(amount) {
+    // abrir ventana de forma síncrona para evitar bloqueo de popup
+    const win = window.open('', '_blank');
+    try {
+      const resp = await fetch('/.netlify/functions/create-webpay', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount })
+      });
+
+      if (!resp.ok) {
+        const text = await resp.text();
+        console.error('create-webpay HTTP error', resp.status, text);
+        win.close();
+        alert('No se pudo iniciar el pago. Revisa la consola.');
+        return;
+      }
+
+      const json = await resp.json();
+      console.log('create-webpay response', json);
+
+      const checkoutUrl = json.checkoutUrl || (json.body && json.body.url) || (json.body && json.body.initPoint) || null;
+      const token = json.token || (json.body && (json.body.token || json.body.token_ws));
+
+      if (checkoutUrl) {
+        win.location.href = checkoutUrl;
+        return;
+      }
+
+      if (token) {
+        const returnUrl = new URL(window.location.origin + '/.netlify/functions/webpay-return');
+        returnUrl.searchParams.set('token_ws', token);
+        win.location.href = returnUrl.toString();
+        return;
+      }
+
+      console.error('No checkoutUrl ni token en respuesta', json);
+      win.close();
+      alert('Respuesta inválida del servidor. Revisa la consola.');
+
+    } catch (err) {
+      console.error('Error iniciando pago', err);
+      try { win.close(); } catch (e) {}
+      alert('Error de red. Revisa la consola.');
+    }
+  }
+
+  // Ejemplo de conexión al botón (ajusta selector)
+  document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.querySelector('#btn-pagar-webpay') || document.querySelector('[data-pay-webpay]');
+    if (btn) btn.addEventListener('click', (e) => { e.preventDefault(); iniciarPago(30000); });
+  });
 });
