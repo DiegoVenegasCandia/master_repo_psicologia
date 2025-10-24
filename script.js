@@ -1023,3 +1023,90 @@ document.addEventListener('DOMContentLoaded', function () {
     if (btn) btn.addEventListener('click', (e) => { e.preventDefault(); iniciarPago(30000); });
   });
 });
+
+{
+  // Reemplaza la función payWithWebpay / duplicados por esta implementación única
+  async function iniciarPago(amount = 30000, btnEl = null) {
+    // abrir ventana de forma síncrona en el click para evitar bloqueo
+    const win = window.open('', '_blank');
+    if (btnEl) {
+      btnEl.dataset._origText = btnEl.textContent || '';
+      btnEl.disabled = true;
+      btnEl.textContent = 'Iniciando pago...';
+    }
+
+    try {
+      const resp = await fetch('/.netlify/functions/create-webpay', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount })
+      });
+
+      if (!resp.ok) {
+        const txt = await resp.text();
+        console.error('create-webpay HTTP error', resp.status, txt);
+        win.close();
+        alert('No se pudo iniciar el pago. Revisa la consola.');
+        return;
+      }
+
+      const json = await resp.json();
+      console.log('create-webpay response', json);
+
+      // soportar varias formas de respuesta del backend (mock/SDK/rest)
+      const checkoutUrl =
+        json.checkoutUrl ||
+        json.url ||
+        (json.body && (json.body.url || json.body.initPoint)) ||
+        (json.data && (json.data.url));
+      const token =
+        json.token ||
+        json.token_ws ||
+        (json.body && (json.body.token || json.body.token_ws)) ||
+        (json.data && (json.data.token || json.data.token_ws));
+
+      if (checkoutUrl) {
+        win.location.href = checkoutUrl;
+        return;
+      }
+
+      if (token) {
+        const returnUrl = new URL(window.location.origin + '/.netlify/functions/webpay-return');
+        returnUrl.searchParams.set('token_ws', token);
+        win.location.href = returnUrl.toString();
+        return;
+      }
+
+      console.error('Respuesta inválida de create-webpay (sin checkoutUrl ni token):', json);
+      win.close();
+      alert('Respuesta inválida del servidor. Revisa la consola.');
+    } catch (err) {
+      console.error('Error iniciando pago', err);
+      try { win.close(); } catch (e) { /* ignore */ }
+      alert('Error de red. Revisa la consola.');
+    } finally {
+      if (btnEl) {
+        btnEl.disabled = false;
+        btnEl.textContent = btnEl.dataset._origText || 'Pagar';
+        delete btnEl.dataset._origText;
+      }
+    }
+  }
+
+  // Asegurar un único listener que use iniciarPago
+  const existingBtn = document.getElementById('btn-webpay') || document.querySelector('[data-pay-webpay]');
+  if (existingBtn) {
+    // quitar listeners previos por seguridad
+    existingBtn.replaceWith(existingBtn.cloneNode(true));
+    const btn = document.getElementById('btn-webpay') || document.querySelector('[data-pay-webpay]');
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const price = Number(btn.dataset.price || '30000');
+      iniciarPago(price, btn);
+    });
+  }
+}
+{
+  // Elimina/ignora cualquier otra definición duplicada de iniciarPago o payWithWebpay
+  // (no añadir más handlers aquí)
+}
