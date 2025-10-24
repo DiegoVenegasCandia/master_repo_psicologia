@@ -22,9 +22,31 @@ exports.handler = async function (event) {
 
     console.log('env check', { apiBase: !!apiBase, commerce: !!commerce, apiKey: !!apiKey, return_url: !!return_url });
 
+    // Safety: default MOCK mode unless WEBPAY_LIVE exactly "true"
+    const isLive = String(process.env.WEBPAY_LIVE || '').toLowerCase() === 'true';
+
+    if (!isLive) {
+      // Mock response to avoid external calls while testing / debugging
+      const mockToken = `mock-${Date.now()}`;
+      const mockCheckoutUrl = `${return_url}?token_ws=${mockToken}&mock=1`;
+      console.log('MOCK MODE: returning fake checkout URL to avoid external call', { mockToken, mockCheckoutUrl });
+      return {
+        statusCode: 200,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          status: 200,
+          ok: true,
+          data: { mock: true, buy_order, session_id, amount, return_url },
+          checkoutUrl: mockCheckoutUrl,
+          token: mockToken
+        })
+      };
+    }
+
+    // LIVE mode: require credentials
     if (!apiBase || !commerce || !apiKey || !return_url) {
-      console.error('Missing WEBPAY env vars');
-      return { statusCode: 500, body: 'Server misconfiguration: missing WEBPAY env vars' };
+      console.error('Missing WEBPAY env vars for LIVE mode', { apiBase: !!apiBase, commerce: !!commerce, apiKey: !!apiKey, return_url: !!return_url });
+      return { statusCode: 500, body: 'Server misconfiguration: missing WEBPAY env vars for LIVE mode' };
     }
 
     // build endpoint safely (avoid double slashes)
@@ -47,13 +69,13 @@ exports.handler = async function (event) {
 
     console.log('create-webpay response', { status: resp.status, ok: resp.ok, data });
 
-    // normalize common fields so frontend knows where to redirect
     const checkoutUrl = data?.url || data?.redirectUrl || data?.initPoint || (data?.body && (data.body.url || data.body.token)) || null;
     const token = data?.token || data?.token_ws || (data?.body && (data.body.token || data.body.token_ws)) || null;
 
     const result = { status: resp.status, ok: resp.ok, data, checkoutUrl, token };
 
     if (!resp.ok) {
+      // return detailed info so you can debug without extra calls
       return { statusCode: 502, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'Bad gateway to payment provider', result }) };
     }
 
