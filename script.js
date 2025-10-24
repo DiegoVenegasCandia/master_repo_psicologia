@@ -936,19 +936,44 @@ document.addEventListener('DOMContentLoaded', function () {
     const origText = btn?.textContent || 'Pagar';
     try {
       if (btn) { btn.disabled = true; btn.textContent = 'Iniciando pago...'; }
+
+      // recoger datos del formulario (asegúrate que los ids existen)
+      const nombre = (document.getElementById('nombre')?.value || '').trim();
+      const email = (document.getElementById('email')?.value || '').trim();
+      const fecha = (document.getElementById('fecha')?._flatpickr?.selectedDates?.[0]?.toISOString()) || (document.querySelector('.flatpickr-input[altinput]')?.value) || (document.getElementById('fecha')?.value || '');
+      const hora = (document.getElementById('hora')?.value || '').trim();
+
+      const body = {
+        amount,
+        metadata: { nombre, email, fecha, hora }
+      };
+
       const res = await fetch('/.netlify/functions/create-webpay', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount })
+        body: JSON.stringify(body)
       });
+
+      if (!res.ok) {
+        const txt = await res.text().catch(()=>null);
+        console.error('create-webpay HTTP error', res.status, txt);
+        alert('No se pudo iniciar el pago. Revisa la consola.');
+        return;
+      }
+
       const json = await res.json();
-      if (!json || !json.url) {
+      // backend devuelve checkoutUrl (o url) que ya contiene return_url+meta
+      const url = json.checkoutUrl || json.url || (json.body && json.body.url) || json.redirectUrl;
+      if (!url) {
         console.error('Respuesta inválida de create-webpay:', json);
         alert('No se pudo iniciar el pago. Revisa la consola.');
         return;
       }
-      // Redirigir en la misma pestaña (mejor para probar return_url local)
-      window.location.href = json.url;
+
+      // abrir en la misma pestaña o en nueva según tu UX; aquí usamos window.open si quieres popup:
+      // window.open(url, '_blank');
+      window.location.href = url;
+
     } catch (err) {
       console.error('Error iniciando Webpay:', err);
       alert('Error iniciando el pago (ver consola).');
