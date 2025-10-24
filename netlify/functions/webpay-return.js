@@ -12,54 +12,59 @@ exports.handler = async function (event) {
 
     console.log('webpay-return invoked', { token, isMock, meta });
 
-    // configurar FRONTEND_RETURN_URL en Netlify: https://tu-sitio.netlify.app
-    const frontend = (process.env.FRONTEND_RETURN_URL || '').replace(/\/$/, '');
+    // target origin for postMessage (configurar en Netlify por seguridad, opcional)
+    const targetOrigin = process.env.FRONTEND_RETURN_ORIGIN || '*';
 
-    // Sin token: mostrar info
     if (!token) {
-      return {
-        statusCode: 200,
-        headers: { 'Content-Type': 'text/html; charset=utf-8' },
-        body: `<!doctype html><html><body><h1>Resultado Webpay</h1><p>No se recibió token_ws.</p><pre>${JSON.stringify(qs,null,2)}</pre></body></html>`
-      };
+      const html = `<!doctype html><html><body><h1>Resultado Webpay</h1><p>No se recibió token_ws.</p><pre>${JSON.stringify(qs,null,2)}</pre></body></html>`;
+      return { statusCode: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' }, body: html };
     }
 
-    // Modo MOCK: no llamar a proveedor; redirigir al frontend con meta si está definido
+    // Función helper para generar HTML que notifica al opener y se cierra
+    const buildResultPage = (statusLabel, providerInfo = {}) => {
+      const payload = {
+        payment: statusLabel,
+        token,
+        meta,
+        provider: providerInfo
+      };
+      const payloadJsonEscaped = JSON.stringify(payload).replace(/</g, '\\u003c');
+      return `<!doctype html><html><head><meta charset="utf-8"><title>Resultado Pago</title></head><body style="font-family:Arial,Helvetica,sans-serif;padding:20px;">
+        <h1>${statusLabel === 'success' ? 'Pago completado' : 'Resultado de pago'}</h1>
+        <p>Token: <strong>${token}</strong></p>
+        <p>Meta: <pre>${JSON.stringify(meta,null,2)}</pre></p>
+        <p>Proveedor: <pre>${JSON.stringify(providerInfo,null,2)}</pre></p>
+        <p>Si la ventana no se cierra automáticamente, <a id="back" href="/">volver al sitio</a></p>
+        <script>
+          (function(){
+            try {
+              var payload = ${payloadJsonEscaped};
+              // enviar resultado al opener (frontend) sin navegar la ventana principal
+              if (window.opener && !window.opener.closed) {
+                window.opener.postMessage(payload, ${JSON.stringify(targetOrigin)});
+              }
+            } catch(e){ console.warn('postMessage failed', e); }
+            // intentamos cerrar la ventana popup después de 1s
+            setTimeout(function(){ try{ window.close(); }catch(e){} }, 1000);
+          })();
+        </script>
+      </body></html>`;
+    };
+
+    // MOCK: no llamadas externas, sólo mostrar/notify y cerrar
     if (isMock) {
-      if (frontend) {
-        const params = new URLSearchParams();
-        params.set('payment','success');
-        params.set('token', token);
-        if (metaRaw) params.set('meta', metaRaw);
-        const redirectTo = `${frontend}/?${params.toString()}`;
-        console.log('MOCK: redirecting to frontend', redirectTo);
-        return { statusCode: 302, headers: { Location: redirectTo }, body: '' };
-      }
-
-      // si no hay frontend configurado, mostrar resultado simulado
-      return {
-        statusCode: 200,
-        headers: { 'Content-Type': 'text/html; charset=utf-8' },
-        body: `<!doctype html><html><body style="font-family:Arial,Helvetica,sans-serif;padding:20px;">
-          <h1>Pago simulado completado</h1>
-          <p>Token (mock): <strong>${token}</strong></p>
-          <p>Meta: <pre>${JSON.stringify(meta,null,2)}</pre></p>
-          <p><a href="/">Volver al sitio</a></p>
-        </body></html>`
-      };
+      const html = buildResultPage('success', { mock: true });
+      return { statusCode: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' }, body: html };
     }
 
-    // Modo LIVE: verificar con proveedor y luego redirigir al frontend (si existe)
+    // LIVE: verificar con proveedor y luego notificar al opener (sin redirigir ventana principal)
     const apiBase = (process.env.WEBPAY_API_URL || '').replace(/\/$/, '');
     const commerce = process.env.WEBPAY_COMMERCE_CODE;
     const apiKey = process.env.WEBPAY_API_KEY;
 
     if (!apiBase || !commerce || !apiKey) {
-      return {
-        statusCode: 500,
-        headers: { 'Content-Type': 'text/html; charset=utf-8' },
-        body: `<!doctype html><html><body><h1>Error de configuración</h1><p>Faltan credenciales WEBPAY en el servidor.</p></body></html>`
-      };
+      const html = buildResultPage('error', { error: 'Faltan credenciales WEBPAY en el servidor' });
+      return { statusCode: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' }, body: html };
     }
 
     const verifyUrl = `${apiBase}/transactions/${encodeURIComponent(token)}`;
@@ -78,32 +83,14 @@ exports.handler = async function (event) {
     let data;
     try { data = JSON.parse(text); } catch (e) { data = { raw: text }; }
 
-    console.log('Provider verification result', { status: resp.status, ok: resp.ok });
-
-    if (frontend) {
-      const params = new URLSearchParams();
-      params.set('payment', resp.ok ? 'success' : 'error');
-      params.set('token', token);
-      if (metaRaw) params.set('meta', metaRaw);
-      // opcional: incluir info corta del proveedor
-      params.set('provider_status', String(resp.status));
-      const redirectTo = `${frontend}/?${params.toString()}`;
-      return { statusCode: 302, headers: { Location: redirectTo }, body: '' };
-    }
-
-    // Si no hay frontend, mostrar resultado detallado
-    const html = `<!doctype html><html><body style="font-family:Arial,Helvetica,sans-serif;padding:20px;">
-      <h1>Resultado Webpay (Servidor)</h1>
-      <p>Token: <strong>${token}</strong></p>
-      <p>HTTP status: ${resp.status}</p>
-      <pre>${JSON.stringify(data,null,2)}</pre>
-      <p><a href="/">Volver al sitio</a></p>
-    </body></html>`;
+    const statusLabel = resp.ok ? 'success' : 'error';
+    const html = buildResultPage(statusLabel, { status: resp.status, data });
 
     return { statusCode: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' }, body: html };
 
   } catch (err) {
     console.error('webpay-return error', err);
-    return { statusCode: 500, body: `Error: ${err.message}` };
+    const html = `<!doctype html><html><body><h1>Error</h1><p>${String(err.message)}</p></body></html>`;
+    return { statusCode: 500, headers: { 'Content-Type': 'text/html; charset=utf-8' }, body: html };
   }
 };
