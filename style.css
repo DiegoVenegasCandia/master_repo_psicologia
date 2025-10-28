@@ -489,7 +489,7 @@ footer {
 
 /* ---- Mejor resposividad: reducir hero padding en mobile ---- */
 @media (max-width: 768px) {
-  .block-hero { padding-top: 0.8rem; padding-bottom: 1rem; }
+  .block-hero { padding: 0.8rem 0 1rem; }
   .hero-content .text-panel { display: block; width: 100%; padding: .9rem; }
   .hero-photo { margin-bottom: .8rem; }
 }
@@ -1786,6 +1786,47 @@ section#pago-seguro.payments-section{
   height: 1px !important;
   opacity: 0 !important;
   pointer-events: none !important;
+}
+
+/* Fix: el contenedor de Servicios dentro del bloque 2 no debe heredar fondo/alto extra */
+.block-info #servicios {
+  background: #0aa6a0 !important;
+  min-height: auto !important;
+  height: auto !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  border: 0 !important;
+}
+
+/* El card de servicios se mantiene compacto */
+#servicios .card {
+  background: #fff;
+}
+
+/* Evita estiramientos indeseados por h-100/equalize */
+.block-info .equalize > [class*="col-"] { display: flex; }
+.block-info .equalize > [class*="col-"] > .feature-card { flex: 1 1 auto; }
+
+/* Si tenías estilos globales para #servicios, limítalos a la sección dedicada (no al div interno) */
+section#servicios { padding: 3rem 0; }
+
+/* Imagen de confianza (bloque 4) */
+#pago-seguro .contactanos-img{
+  display: flex;
+  justify-content: center;   /* centra horizontal */
+  position: relative;
+  z-index: 1;
+}
+
+#pago-seguro .contactanos-img picture,
+#pago-seguro .contactanos-img img{
+  display: block;            /* antes: contents */
+  width: min(100%, 300px);    /* responsivo */
+  max-width: 720px;
+  height: auto;
+  border-radius: 16px;
+    box-shadow: 0 10px 28px rgba(0,0,0,.12);
+
 }
 
 

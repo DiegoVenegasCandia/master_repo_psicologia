@@ -860,6 +860,8 @@ document.addEventListener('DOMContentLoaded', function () {
     './assets/bg-payments.png'
   ];
 
+  
+
   const load = (i = 0) => {
     if (i >= candidates.length) return;
     const src = candidates[i];
@@ -969,4 +971,34 @@ document.addEventListener('DOMContentLoaded', () => {
   syncAmount();
   btn.addEventListener('click', syncAmount);
   form.addEventListener('submit', syncAmount);
+});
+
+// Scroll suave para botones del header
+document.querySelectorAll('.nav-btn').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    let targetId = btn.dataset.target;
+    // compatibilidad si aún existe algún botón apuntando a "servicios"
+    if (targetId === 'servicios') targetId = 'form-cita-section';
+    const el = document.getElementById(targetId);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+// Scroll suave para "Agendar ahora" (dentro de Servicios) hacia #form-cita-section
+document.addEventListener('DOMContentLoaded', () => {
+  const links = document.querySelectorAll('a[href="#form-cita-section"]');
+  if (!links.length) return;
+
+  const header = document.querySelector('.site-header');
+  const headerH = () => Math.ceil(header?.getBoundingClientRect().height || 0);
+
+  const go = (e) => {
+    e.preventDefault();
+    const target = document.getElementById('form-cita-section');
+    if (!target) return;
+    const top = target.getBoundingClientRect().top + window.scrollY - headerH() - 8;
+    window.scrollTo({ top: Math.max(0, Math.floor(top)), behavior: 'smooth' });
+  };
+
+  links.forEach(a => a.addEventListener('click', go));
 });

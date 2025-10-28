@@ -80,8 +80,9 @@
       <nav class="header-nav" aria-label="Navegación principal">
         <button class="nav-btn" data-target="sobre-mi">Sobre mí</button>
         <button class="nav-btn" data-target="areas">Áreas de atención</button>
-        <button class="nav-btn" data-target="servicios">Agendar</button>
-        <button class="nav-btn" data-target="pago-seguro">Pago</button>
+        <!-- antes: data-target="servicios" -->
+        <button class="nav-btn" data-target="form-cita-section">Agendar</button>
+        <button class="nav-btn" data-target="pago-seguro">Contacto</button>
       </nav>
     </div>
   </header>
@@ -148,43 +149,60 @@
     <div class="block-bg" data-speed="0.08" aria-hidden="true"></div>
 
     <div class="container-lg my-5">
-    <h2 id="titulo-acompanamiento" class="section-title text-center mb-5">Acompañamiento psicológico</h2>
+      <h2 id="titulo-acompanamiento" class="section-title text-center mb-5">Acompañamiento psicológico</h2>
 
       <div class="row text-center equalize justify-content-center">
         <div class="col-md-4 mb-4">
           <div class="feature-card h-100 d-flex flex-column align-items-center text-center">
             <div class="recorte posicion-porque mx-auto" style="max-width:320px;">
-              <img src="./assets/porque.png" alt="Por qué atenderte" loading="lazy" width="320" height="427" style="width:100%;height:100%;object-fit:cover;">
+              <img src="./assets/porque.png" alt="Por qué atenderte" loading="lazy" width="320" height="427"
+                style="width:100%;height:100%;object-fit:cover;">
             </div>
             <h3 class="feature-title mt-3">¿Por qué atenderte conmigo?</h3>
-            <p class="feature-desc">El acompañamiento psicológico permite reconocer tus fortalezas y explorar recursos frente a lo que te preocupa. Es un espacio para ser tú.</p>
+            <p class="feature-desc">El acompañamiento psicológico permite reconocer tus fortalezas y explorar recursos
+              frente a lo que te preocupa. Es un espacio para ser tú.</p>
           </div>
         </div>
 
         <div class="col-md-4 mb-4">
           <div class="feature-card h-100 d-flex flex-column align-items-center text-center">
             <div class="recorte posicion-quienes mx-auto" style="max-width:320px;">
-              <img src="./assets/quienes.png" alt="Quiénes se atienden" loading="lazy" width="320" height="427" style="width:100%;height:100%;object-fit:cover;">
+              <img src="./assets/quienes.png" alt="Quiénes se atienden" loading="lazy" width="320" height="427"
+                style="width:100%;height:100%;object-fit:cover;">
             </div>
             <h3 class="feature-title mt-3">¿Quiénes se atienden conmigo?</h3>
-            <p class="feature-desc">Adolescentes y adultos que buscan apoyo para conocerse mejor, fortalecer su autoestima y mejorar sus relaciones.</p>
+            <p class="feature-desc">Adolescentes y adultos que buscan apoyo para conocerse mejor, fortalecer su
+              autoestima y mejorar sus relaciones.</p>
           </div>
         </div>
 
         <div class="col-md-4 mb-4">
           <div class="feature-card h-100 d-flex flex-column align-items-center text-center">
             <div class="recorte posicion-como mx-auto" style="max-width:320px;">
-              <img src="./assets/como.png" alt="Cómo lo logramos" loading="lazy" width="320" height="427" style="width:100%;height:100%;object-fit:cover;">
+              <img src="./assets/como.png" alt="Cómo lo logramos" loading="lazy" width="320" height="427"
+                style="width:100%;height:100%;object-fit:cover;">
             </div>
             <h3 class="feature-title mt-3">¿Cómo lo logramos?</h3>
-            <p class="feature-desc">Trabajamos con herramientas que impulsan el autoconocimiento, el bienestar y el desarrollo personal.</p>
+            <p class="feature-desc">Trabajamos con herramientas que impulsan el autoconocimiento, el bienestar y el
+              desarrollo personal.</p>
+          </div>
+        </div>
+      </div>
+      <div class="container-lg text-center" id="servicios">
+        <h2 class="mb-4">Servicios</h2>
+        <div class="card mx-auto" style="max-width: 420px;">
+          <div class="card-body">
+            <h5 class="card-title">Sesión de acompañamiento psicológica</h5>
+            <p class="card-text">Sesión individual online, duración aproximada de 50 minutos.</p>
+            <p class="fs-4 fw-bold text-primary" id="precio-servicio">$30.000</p>
+            <a href="#form-cita-section" class="btn btn-outline-primary">Agendar ahora</a>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- SERVICES: id correcto -->
+  <!-- SERVICES: id correcto 
   <section id="servicios" class="bg-white">
     <div class="container-lg text-center">
       <h2 class="mb-4">Servicios</h2>
@@ -197,11 +215,12 @@
         </div>
       </div>
     </div>
-  </section>
+  </section>-->
 
   <section class="bg-light py-5" id="form-cita-section">
     <div class="container-lg">
       <h2 class="text-center mb-4">Agenda tu cita</h2>
+      <!--
       <form id="form-cita" class="row g-3" novalidate>
         <div class="col-md-6">
           <label for="nombre" class="form-label">Nombre completo</label>
@@ -236,43 +255,64 @@
               aria-hidden="true"></span>
           </button>
         </div>
-      </form>
-      <div id="confirmacion" class="mt-3 text-success text-center" role="status" aria-live="polite"></div>
-    </div>
+        -->
+      <div class="col-12"> <!-- Google Calendar Appointment Scheduling begin -->
+        <!-- Google Calendar Appointment Scheduling begin -->
+        <!-- Google Calendar Appointment Scheduling begin -->
+        <iframe
+          src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ16wVv3yZXfpNH9ZjRgz2o48GaAR1p_OBbXx6_L3ntI64AQ3dIS4xjQtCtYUf1a0gPtHzWnXa3J?gv=true"
+          style="border: 0" width="100%" height="600" frameborder="0"></iframe>
+
+        <!-- end Google Calendar Appointment Scheduling -->
+        <!--</form>-->
+        <div id="confirmacion" class="mt-3 text-success text-center" role="status" aria-live="polite"></div>
+      </div>
+
   </section>
 
   <!-- Pago seguro (bloque 4) -->
+
   <section id="pago-seguro" class="payments-section text-center">
-  <div class="block-bg" aria-hidden="true"></div>
-  <div class="container-lg">
-    <h2 id="titulo-pago-seguro" class="section-title text-center">Pago seguro</h2>
-    <p>Realiza el pago de tu sesión a través de Webpay o MercadoPago.</p>
-    <div class="d-flex justify-content-center gap-2">
-      <form id="webpay-form" name="rec20108_btn1" method="post" action="https://www.webpay.cl/backpub/external/form-pay" target="_blank" class="d-inline">
-        <input type="hidden" name="idFormulario" value="329347" />
-        <input type="hidden" name="monto" id="webpay-monto" value="30000" />
-        <button id="btn-webpay" type="submit" class="btn btn-outline-success" data-price="30000">
-          Pagar con Webpay
-        </button>
-      </form>
-      <button id="btn-mercadopago" class="btn btn-outline-warning" data-price="30000">Pagar con MercadoPago</button>
-     <!-- MercadoPago: script oficial. Genera un botón nativo oculto que disparamos desde el nuestro -->
-     <span id="mp-script-container">
-       <script id="mp-checkout" src="https://www.mercadopago.cl/integrations/v1/web-payment-checkout.js"
-         data-preference-id="232641053-46265c53-26f5-4c69-8915-5e2f482f5897" data-source="button">
-       </script>
-     </span>
+    <div class="block-bg" aria-hidden="true"></div>
+    <div class="container-lg">
+      <h2 id="titulo-pago-seguro" class="section-title text-center">Comunicate conmigo</h2>
+      <!--<p>Realiza el pago de tu sesión a través de Webpay o MercadoPago.</p>-->
+      <!--
+      <div class="d-flex justify-content-center gap-2">
+        <form id="webpay-form" name="rec20108_btn1" method="post"
+          action="https://www.webpay.cl/backpub/external/form-pay" target="_blank" class="d-inline">
+          <input type="hidden" name="idFormulario" value="329347" />
+          <input type="hidden" name="monto" id="webpay-monto" value="30000" />
+          <button id="btn-webpay" type="submit" class="btn btn-outline-success" data-price="30000">
+            Pagar con Webpay
+          </button>
+        </form>
+        <button id="btn-mercadopago" class="btn btn-outline-warning" data-price="30000">Pagar con MercadoPago</button>
+        <span id="mp-script-container">
+          <script id="mp-checkout" src="https://www.mercadopago.cl/integrations/v1/web-payment-checkout.js"
+            data-preference-id="232641053-46265c53-26f5-4c69-8915-5e2f482f5897" data-source="button">
+            </script>
+        </span>
+      </div>
+    -->
+      <div class="d-flex justify-content-center gap-2">
+        <a href="https://api.whatsapp.com/send/?phone=56939456619" target="_blank" class="btn btn-outline-success">
+          <i class="fab fa-whatsapp me-2"></i> Agendar por WhatsApp
+        </a>
+      </div>
+
+      <!-- Imagen de confianza en la comunicación -->
+      <div class="contactanos-img mt-4">
+        <picture>
+          <img src="./assets/Logo.png"
+            alt="PS Camila Hernandez"
+            class="img-fluid" width="960" height="540" loading="lazy">
+        </picture>
+      </div>
     </div>
-        <!-- WhatsApp dentro de pago-seguro -->
-        <div class="text-center py-4">
-          <p>Comunicate con nosotros</p>
-          <a href="https://api.whatsapp.com/send/?phone=56939456619" target="_blank" class="btn btn-outline-success">
-            <i class="fab fa-whatsapp me-2"></i> Agendar por WhatsApp
-          </a>
-          <small class="d-block mt-2 text-muted">En línea</small>
-        </div>
-     </div>
   </section>
+
+
 
   <footer class="text-center py-4 bg-dark text-white">
     <p>&copy; 2025 Camila Hernández. Todos los derechos reservados.</p>
