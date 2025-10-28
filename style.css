@@ -9,6 +9,9 @@
   --bg-soft:#f6fbfb;
   --shadow:0 8px 30px rgba(3,40,40,0.06);
   --radius:12px;
+
+  /* Estándar global para títulos de bloque */
+  --block-title-pt: 38px;
 }
 
 /* Reset / base */
@@ -819,6 +822,16 @@ main > section {
 /* asegurar h2 con margen controlado */
 .text-panel h2 { margin: 0 0 0.6rem 0; }
 
+/* Hero a pantalla completa (debajo del header) */
+.block-hero{
+  /* 100vh real en móviles usando --vh que setea el JS,
+     con fallback a 100vh si no existe la variable */
+  min-height: calc((var(--vh, 1vh) * 100) - var(--header-height));
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* centra el grupo de contenidos */
+}
+
 /* el contenedor switcher tendrá su altura fijada desde JS */
 .switcher {
   position: relative;
@@ -1245,56 +1258,535 @@ select.is-invalid {
   margin: .5rem 0 0;
 }
 
-/* Ajustes responsivos y pequeños fixes visuales */
-.block-hero {
+/* Bloque 2 (Áreas): armonía de título y columnas iguales */
+#areas .section-title{
+  font-weight: 800;
+  font-size: clamp(1.35rem, 1.1rem + 1.2vw, 2rem);
+  line-height: 1.15;
+  margin: 0 0 1.25rem;
+  color: #083737;
+}
+
+/* Igualar altura de las 3 columnas */
+#areas .row.equalize > [class^="col-"],
+#areas .row.equalize > [class*=" col-"]{
+  display: flex;
+}
+#areas .feature-card{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  width:100%;
+}
+
+/* Títulos con altura consistente: alinea el inicio de las descripciones */
+#areas .feature-title{
+  margin: .75rem 0 .45rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color:#083737;
+  min-height: 3.2em; /* ~2 líneas */
+}
+
+/* Ajuste fino: más margen en la 3a columna para alinear la descripción */
+#areas .row.equalize > .col-md-4:nth-child(3) .feature-title{
+  margin-bottom: .7rem;
+}
+
+/* Descripciones con altura pareja */
+#areas .feature-desc{
+  color:#56656e;
+  margin: 0;
+  min-height: 5.6em; /* ~3-4 líneas */
+}
+
+/* En móvil no forzar alturas */
+@media (max-width: 768px){
+  #areas .feature-title,
+  #areas .feature-desc{ min-height: 0; }
+}
+
+/* Bloque 2 a pantalla completa, centrado verticalmente (igual que el hero) */
+#areas{
+  min-height: calc((var(--vh, 1vh) * 100) - var(--header-height));
+  display: flex;
+  align-items: center;         /* centra vertical */
+  padding: 2rem 0;             /* respiración */
+  position: relative;
+}
+#areas > .container-lg{
+  position: relative;
+  z-index: 2;                  /* sobre el fondo */
+  width: 100%;
+}
+
+/* Si el contenido es muy alto en móvil, deja que crezca sin recortes */
+@media (max-width: 768px){
+  #areas{ padding: 1.25rem 0; }
+}
+
+/* Bloque 2: centrar verticalmente la hilera de tarjetas */
+#areas .container-lg{
+  min-height: 75vh;            /* altura visual del bloque */
+  display: flex;
+  flex-direction: column;      /* apila título y fila */
+}
+#areas .section-title{
+  margin-bottom: 3rem;         /* empuja las tarjetas hacia abajo */
+}
+#areas .row.equalize{
+  justify-content: center;     /* centra horizontal */
+  margin-top: auto;            /* centra vertical entre título y fondo */
+  margin-bottom: auto;
+}
+
+/* opcional: en pantallas pequeñas, reduce altura mínima */
+@media (max-width: 575.98px){
+  #areas .container-lg{ min-height: 60vh; }
+  #areas .section-title{ margin-bottom: 2rem; }
+}
+
+/* Bloque 2 a pantalla completa, centrado verticalmente (igual que el hero) */
+#areas{
+  min-height: calc((var(--vh, 1vh) * 100) - var(--header-height));
+  display: flex;
+  align-items: center;         /* centra vertical */
+  padding: 2rem 0;             /* respiración */
+  position: relative;
+}
+#areas > .container-lg{
+  position: relative;
+  z-index: 2;                  /* sobre el fondo */
+  width: 100%;
+}
+
+/* Si el contenido es muy alto en móvil, deja que crezca sin recortes */
+@media (max-width: 768px){
+  #areas{ padding: 1.25rem 0; }
+}
+
+/* Date input: mantener el icono centrado aunque aparezcan mensajes de error */
+.date-wrapper{
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-auto-rows: auto;
+  align-items: center; /* centra en la 1ª fila (input) */
+}
+
+.date-wrapper .flatpickr-input,
+.date-wrapper input[type="date"]{
+  grid-row: 1;
+  grid-column: 1;
+  padding-right: 3rem; /* espacio para el icono */
+}
+
+/* El icono se superpone en la misma celda del input (no depende de la altura del wrapper) */
+.date-wrapper .calendar-icon{
+  position: relative;   /* override al absolute previo */
+  grid-row: 1;
+  grid-column: 1;
+  justify-self: end;
+  align-self: center;
+  right: 12px;
+  top: auto;
+  transform: none;
+  z-index: 2;
+}
+
+/* Mensajes de validación dentro del wrapper pasan a la 2ª fila */
+.date-wrapper .invalid-feedback,
+.date-wrapper .input-error,
+.date-wrapper .form-text,
+.date-wrapper .text-danger{
+  grid-row: 2;
+  grid-column: 1 / -1;
+  margin-top: .35rem;
+}
+
+/* Mantener color/posición en estado inválido */
+.date-wrapper input.is-invalid + .calendar-icon,
+.date-wrapper .flatpickr-input.is-invalid + .calendar-icon{
+  color: var(--calipso);
+}
+
+@media (max-width:768px){
+  .date-wrapper .calendar-icon{ right: 10px; }
+}
+
+/* Fondo con imagen para el bloque de pago */
+.payments-section,
+#pago-seguro,
+#pago,
+#pagos{
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  /* altura mínima para que el fondo se vea */
+  min-height: clamp(420px, calc(var(--vh, 1vh) * 70), 820px);
+  scroll-margin-top: var(--header-height);
 }
 
-.block-hero .block-bg {
+/* el contenedor de contenido va por encima del fondo */
+.payments-section > .container-lg,
+#pago-seguro > .container-lg,
+#pago > .container-lg,
+#pagos > .container-lg{
+  position: relative;
+  z-index: 2;
+}
+
+/* capa fondo: igual que en los otros bloques con .block-bg */
+#pago-seguro .block-bg,
+#pago .block-bg,
+#pagos .block-bg{
   position: absolute;
   inset: 0;
-  background-image: url('./assets/bg-hero.webp');
-  background-size: cover;
-  background-position: center;
-  opacity: 0.12;
-  transform: translateZ(0);
   z-index: 0;
-}
-
-/* Asegurar contenido por encima del fondo */
-.block-hero .container-lg { position: relative; z-index: 1; }
-
-/* Foto y panel en móvil: stack */
-@media (max-width: 767.98px) {
-  .hero-content .col-md-4,
-  .hero-content .col-md-8 {
-    flex: 0 0 100%;
-    max-width: 100%;
-    text-align: center;
-  }
-  .hero-photo { margin-bottom: 1rem; max-width: 320px; }
-}
-
-/* Icono calendario dentro del input */
-.date-wrapper { position: relative; }
-.calendar-icon {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #6c757d;
   pointer-events: none;
 }
 
-/* Mejor contraste para botones en el footer/hero */
-.btn-outline-primary { border-color: #0d6efd; }
-/* Variable por defecto (por si JS no corre de inmediato) */
-:root { --header-height: 80px; }
-
-/* Asegurar que los saltos por ancla respeten el header */
-section, header, .block-hero, #form-cita-section, #areas, #servicios {
-  scroll-margin-top: calc(var(--header-height) + 12px);
+/* la imagen se inyecta en --bg-url desde JS */
+#pago-seguro .block-bg::before,
+#pago .block-bg::before,
+#pagos .block-bg::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--bg-url, none);
+  background-size: cover;
+  background-position: center 35%;
+  background-repeat: no-repeat;
+  opacity: 1; /* visible */
 }
+
+/* overlay suave (más transparente para que se aprecie el fondo) */
+#pago-seguro::after,
+#pago::after,
+#pagos::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg,
+    rgba(255,255,255,0.50) 0%,
+    rgba(255,255,255,0.65) 40%,
+    rgba(255,255,255,0.80) 100%);
+}
+
+/* Menos brillo en el bloque de pagos */
+.payments-section {
+  position: relative;
+}
+
+/* Blur suave del fondo */
+.payments-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.01); /* activa el backdrop-filter */
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  pointer-events: none;
+}
+
+/* Oscurecer un poco más */
+.payments-section::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.32); /* antes 0.18 */
+  pointer-events: none;
+}
+
+.payments-section > .container-lg {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width:768px){
+  .payments-section{ min-height: clamp(380px, calc(var(--vh, 1vh) * 65), 700px); }
+  #pago-seguro::after, #pago::after, #pagos::after{ background: rgba(255,255,255,0.88); }
+}
+
+/* Pago seguro: usar la imagen original sin gradientes ni filtros */
+.payments-section {
+  background: url('./assets/bg-payments.webp') center/cover no-repeat;
+  filter: none !important;
+  background-blend-mode: normal !important;
+  position: relative;
+}
+
+/* Desactivar cualquier overlay previo */
+.payments-section::before,
+.payments-section::after {
+  content: none !important;
+  background: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Mantener el contenido por encima (si existía z-index previo) */
+.payments-section > .container-lg {
+  position: relative;
+  z-index: 1;
+}
+
+/* Bloque 2: coloca el contenido más arriba y reduce margen del contenedor */
+#areas{
+  align-items: flex-start;              /* antes: center */
+  padding-top: 38px;                    /* menos espacio arriba */
+  scroll-margin-top: var(--header-height);
+}
+#areas .container-lg.my-5{
+  margin-top: 0.75rem !important;       /* antes: my-5 de Bootstrap (3rem) */
+  margin-bottom: 1.25rem !important;
+}
+
+/* Bloque 4 (Pago seguro): menos padding y sin centrado vertical */
+.payments-section,
+#pago-seguro{
+  align-items: flex-start;              /* antes: center */
+}
+#pago-seguro{
+  padding-top: 1.25rem !important;      /* override a py-5 */
+  padding-bottom: 1.75rem !important;   /* un poco menos abajo */
+  scroll-margin-top: var(--header-height);
+}
+
+/* ESTÁNDAR: todos los h2 de secciones con padding-top de 38px */
+section > .container-lg > h2,
+section h2.section-title{
+  font-family: 'Inter', 'Segoe UI', sans-serif !important;
+  font-size: 32px !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+  padding-top: var(--block-title-pt) !important; /* 38px */
+  margin: 0 0 24px !important;
+  color: var(--primary-color);
+}
+
+/* Normalizar secciones con utilidades que agregaban padding superior */
+#areas,
+#servicios,
+#form-cita-section,
+#pago-seguro{
+  padding-top: 0 !important;  /* anula py-* de Bootstrap si aplica */
+}
+
+/* Quitar margen extra del contenedor interno en #areas (venía de .my-5) */
+#areas .container-lg.my-5{
+  margin-top: 0 !important;
+}
+
+/* Alinear contenido al inicio en bloques altos (evita centrado vertical) */
+#areas{ align-items: flex-start; }
+#pago-seguro,
+.payments-section{ align-items: flex-start; }
+
+/* Pago seguro: espaciados y botones (usar clases existentes) */
+#pago-seguro > .container-lg > p:first-of-type{
+  margin-top: 18px;   /* más separación respecto al título */
+  margin-bottom: 24px; /* un poco más de aire con los botones */
+  color: var(--muted);
+}
+
+/* Botones: el estado normal toma el color del hover anterior; hover = sutilmente distinto */
+#pago-seguro .btn{
+  border-radius: 999px;
+  padding: .5rem 1rem;
+  transition: background-color .15s ease, border-color .15s ease, color .15s ease, box-shadow .15s ease, transform .08s ease;
+}
+
+/* Success (Webpay y WhatsApp) */
+#pago-seguro .btn.btn-outline-success{
+  background: var(--calipso);
+  border-color: var(--calipso);
+  color: #fff;
+}
+#pago-seguro .btn.btn-outline-success:hover,
+#pago-seguro .btn.btn-outline-success:focus{
+  background: #08958f;           /* sutilmente más oscuro */
+  border-color: #08958f;
+  color: #fff;
+  box-shadow: 0 8px 22px rgba(10,166,160,0.18);
+  transform: translateY(-1px);
+}
+
+/* Warning (MercadoPago) */
+#pago-seguro .btn.btn-outline-warning{
+  background: #ffc107;           /* color de hover "anterior" */
+  border-color: #ffc107;
+  color: #2c3e50;
+}
+#pago-seguro .btn.btn-outline-warning:hover,
+#pago-seguro .btn.btn-outline-warning:focus{
+  background: #e0aa06;           /* sutilmente más oscuro */
+  border-color: #e0aa06;
+  color: #fff;
+  box-shadow: 0 8px 22px rgba(224,170,6,0.22);
+  transform: translateY(-1px);
+}
+
+/* BLOQUE 4 — centrar verticalmente el contenido */
+#pago-seguro,
+.payments-section{
+  align-items: center !important; /* antes: flex-start */
+}
+
+/* BLOQUE 4 — separaciones del texto bajo el título (ya aplicadas) */
+#pago-seguro > .container-lg > p:first-of-type{
+  margin-top: 18px;
+  margin-bottom: 24px; /* un poco más de aire con los botones */
+}
+
+/* BOTONES — WhatsApp: vuelve a outline, rellena al hover */
+#pago-seguro a.btn.btn-outline-success{
+  background: transparent !important;
+  border-color: var(--calipso) !important;
+  color: var(--calipso) !important;
+}
+#pago-seguro a.btn.btn-outline-success:hover,
+#pago-seguro a.btn.btn-outline-success:focus{
+  background: var(--calipso) !important;
+  border-color: var(--calipso) !important;
+  color: #fff !important;
+}
+
+/* BOTONES — Webpay: morado/blanco con hover más oscuro */
+#pago-seguro #btn-webpay{
+  background: #6f42c1 !important;   /* morado institucional */
+  border-color: #6f42c1 !important;
+  color: #fff !important;
+}
+#pago-seguro #btn-webpay:hover,
+#pago-seguro #btn-webpay:focus{
+  background: #5a33a1 !important;   /* sutilmente más oscuro */
+  border-color: #5a33a1 !important;
+  color: #fff !important;
+  box-shadow: 0 8px 22px rgba(90,51,161,0.22);
+  transform: translateY(-1px);
+}
+
+/* BLOQUE 4 — usar solo .block-bg (JS la inyecta) y quitar fondos/overlays del section */
+.payments-section{
+  background: none !important;
+  background-image: none !important;
+}
+#pago-seguro::before, #pago-seguro::after,
+#pago::before, #pago::after,
+#pagos::before, #pagos::after,
+.payments-section::before, .payments-section::after{
+  content: none !important;
+  background: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Centrado vertical del contenido */
+#pago-seguro, .payments-section{
+  align-items: center !important;
+}
+
+/* Reset a cualquier “success” genérico dentro del bloque de pagos */
+#pago-seguro .btn.btn-outline-success{
+  background: transparent !important;
+  border-color: var(--calipso) !important;
+  color: var(--calipso) !important;
+  box-shadow: none !important;
+}
+
+/* WhatsApp: outline normal y relleno en hover */
+#pago-seguro a.btn.btn-outline-success:hover,
+#pago-seguro a.btn.btn-outline-success:focus{
+  background: var(--calipso) !important;
+  border-color: var(--calipso) !important;
+  color: #fff !important;
+  box-shadow: 0 8px 22px rgba(10,166,160,0.18);
+  transform: translateY(-1px);
+}
+
+/* Webpay: morado/blanco */
+#pago-seguro #btn-webpay{
+  background: #6f42c1 !important;
+  border-color: #6f42c1 !important;
+  color: #fff !important;
+}
+#pago-seguro #btn-webpay:hover,
+#pago-seguro #btn-webpay:focus{
+  background: #5a33a1 !important;
+  border-color: #5a33a1 !important;
+  color: #fff !important;
+  box-shadow: 0 8px 22px rgba(90,51,161,0.22);
+  transform: translateY(-1px);
+}
+
+/* BLOQUE 4 — títulos con misma estructura (38px arriba) */
+#pago-seguro > .container-lg > h2{
+  padding-top: var(--block-title-pt) !important; /* 38px */
+  margin-top: 0 !important;
+}
+
+/* FIX bloque 4: el título quedaba muy abajo por exceso de padding superior */
+.payments-section {
+  /* antes: tenía un padding-top alto por el fondo */
+  padding-top: 0 !important;           /* igual que Servicios */
+  padding-bottom: clamp(2.5rem, 6vw, 5rem);
+}
+
+#pago-seguro .container-lg {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+#pago-seguro .section-title {
+  margin-top: 0;
+}
+
+/* Opcional: estandarizar el desplazamiento al navegar con anclas */
+section[id] { scroll-margin-top: 80px; } /* altura aprox. del header */
+
+/* BLOQUE 4 — restaurar tamaño original y mantener título arriba
+   (sobre-escribe el patch anterior que ponía display:block y min-height:auto) */
+section#pago-seguro.payments-section{
+  display: flex !important;                                          /* vuelve al layout del bloque de pagos */
+  min-height: clamp(420px, calc(var(--vh, 1vh) * 70), 820px) !important; /* alto anterior (~70vh) */
+  align-items: flex-start !important;                                 /* no centrar verticalmente */
+  padding-top: 0 !important;                                          /* el h2 ya añade 38px estándar */
+  padding-bottom: clamp(2.5rem, 6vw, 5rem) !important;                /* mismo respiro inferior */
+}
+
+/* --- Bloque 4: más separación bajo el título para centrar visualmente el contenido --- */
+#pago-seguro > .container-lg > h2 {
+  padding-bottom: clamp(4.25rem, 2.2vw, 2.6rem) !important;
+}
+
+/* --- Bloque 4: WhatsApp con colores de marca (relleno verde) --- */
+#pago-seguro a.btn.btn-outline-success{
+  background: #25D366 !important;   /* verde WhatsApp */
+  border-color: #25D366 !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+#pago-seguro a.btn.btn-outline-success:hover,
+#pago-seguro a.btn.btn-outline-success:focus{
+  background: #1ebe57 !important;   /* verde un poco más oscuro */
+  border-color: #1ebe57 !important;
+  color: #fff !important;
+  box-shadow: 0 8px 22px rgba(37,211,102,0.22) !important;
+}
+
+/* Ocultar el botón nativo de MercadoPago (usamos el estilizado) */
+.mercadopago-button{
+  position: absolute !important;
+  left: -9999px !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 
 

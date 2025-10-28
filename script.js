@@ -67,8 +67,12 @@ document.addEventListener('DOMContentLoaded', function () {
       const el = document.getElementById(sectionIds[i]);
       if (!el) continue;
       const top = el.getBoundingClientRect().top + window.scrollY;
-      if (offset >= top) current = sectionIds[i];
+      if (offset >= top - 1) current = sectionIds[i];
     }
+    // FIX: al llegar al fondo, marcar el último (pago-seguro)
+    const nearBottom = window.innerHeight + window.scrollY >= (document.documentElement.scrollHeight - 2);
+    if (nearBottom && sectionIds.length) current = sectionIds[sectionIds.length - 1];
+
     if (current) setActive(current);
   }
 
@@ -199,8 +203,12 @@ document.addEventListener('DOMContentLoaded', function () {
           const el = document.getElementById(sectionIds[i]);
           if (!el) continue;
           const top = el.getBoundingClientRect().top + window.scrollY;
-          if (offset >= top) current = sectionIds[i];
+          if (offset >= top - 1) current = sectionIds[i];
         }
+        // FIX: al llegar al fondo, marcar el último (pago-seguro)
+        const nearBottom = window.innerHeight + window.scrollY >= (document.documentElement.scrollHeight - 2);
+        if (nearBottom && sectionIds.length) current = sectionIds[sectionIds.length - 1];
+
         if (current) setActive(current);
       };
       window.addEventListener('scroll', onScroll, { passive: true });
@@ -765,373 +773,200 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 })();
 
-/* Nuevo código: manejo DOM, flatpickr, formulario (EmailJS) y pagos simulados */
-document.addEventListener('DOMContentLoaded', function () {
-  // Navegación smooth
-  document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const target = document.getElementById(btn.dataset.target);
-      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  });
+// MercadoPago: el botón estilizado dispara el nativo generado por el script oficial
+document.addEventListener('DOMContentLoaded', () => {
+  const styledBtn = document.getElementById('btn-mercadopago');
+  if (!styledBtn) return;
 
-  // Toggle "Más sobre mi"
-  const sobreMas = document.getElementById('btn-mas-sobre');
-  const sobreMenos = document.getElementById('btn-menos-sobre');
-  const excerpt = document.getElementById('sobre-excerpt');
-  const more = document.getElementById('sobre-more');
-  if (sobreMas && sobreMenos && excerpt && more) {
-    sobreMas.addEventListener('click', () => {
-      excerpt.style.display = 'none';
-      excerpt.setAttribute('aria-hidden', 'true');
-      more.style.display = '';
-      more.setAttribute('aria-hidden', 'false');
-      more.querySelector('button')?.focus();
-    });
-    sobreMenos.addEventListener('click', () => {
-      more.style.display = 'none';
-      more.setAttribute('aria-hidden', 'true');
-      excerpt.style.display = '';
-      excerpt.setAttribute('aria-hidden', 'false');
-      sobreMas.focus();
-    });
-  }
+  const findNativeBtn = () =>
+    document.querySelector('a.mercadopago-button, button.mercadopago-button');
 
-  // flatpickr init
-  if (window.flatpickr) {
-    flatpickr("#fecha", {
-      locale: "es",
-      minDate: "today",
-      dateFormat: "d-m-Y",
-      disableMobile: true,
-      altInput: true,
-      altFormat: "d \\de F \\de Y",
-    });
-  }
-
-  // Formulario: EmailJS
-  const form = document.getElementById('form-cita');
-  const btnReservar = document.getElementById('btn-reservar');
-  const btnText = document.getElementById('btn-text');
-  const btnSpinner = document.getElementById('btn-spinner');
-  const confirmEl = document.getElementById('confirmacion');
-
-  // Reemplazar con tus IDs de EmailJS (service_..., template_...)
-  const EMAILJS_SERVICE = 'SERVICE_ID';
-  const EMAILJS_TEMPLATE = 'TEMPLATE_ID';
-
-  function setLoading(on) {
-    if (!btnReservar) return;
-    if (on) {
-      btnReservar.disabled = true;
-      btnSpinner.classList.remove('d-none');
-      btnText.textContent = 'Enviando...';
-    } else {
-      btnReservar.disabled = false;
-      btnSpinner.classList.add('d-none');
-      btnText.textContent = 'Reservar cita';
-    }
-  }
-
-  if (form) {
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      // Validación básica HTML5
-      if (!form.checkValidity()) {
-        form.classList.add('was-validated');
-        return;
-      }
-
-      const nombre = document.getElementById('nombre')?.value.trim();
-      const email = document.getElementById('email')?.value.trim();
-      const fecha = document.getElementById('fecha')?.value.trim();
-      const hora = document.getElementById('hora')?.value.trim();
-
-      setLoading(true);
-      confirmEl.textContent = '';
-
-      const templateParams = {
-        nombre,
-        email,
-        fecha,
-        hora,
-        servicio: document.querySelector('#precio-servicio')?.textContent || 'Sesión'
-      };
-
-      // Uso de EmailJS desde el cliente (ya inicializaste la key en index.html)
-      // IMPORTANTE: reemplazar EMAILJS_SERVICE y EMAILJS_TEMPLATE por tus valores reales.
-      if (EMAILJS_SERVICE === 'SERVICE_ID' || EMAILJS_TEMPLATE === 'TEMPLATE_ID') {
-        // Simulación en cliente (si no configuraste EmailJS aún)
-        setTimeout(() => {
-          setLoading(false);
-          confirmEl.textContent = 'Solicitud recibida (simulación). Revisa tu correo para confirmar.';
-          form.reset();
-        }, 900);
-        return;
-      }
-
-      emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, templateParams)
-        .then(() => {
-          setLoading(false);
-          confirmEl.textContent = 'Reserva enviada. Revisa tu correo para confirmar la sesión.';
-          form.reset();
-        }, (err) => {
-          setLoading(false);
-          console.error('EmailJS error:', err);
-          confirmEl.textContent = 'Ocurrió un error al enviar. Intenta nuevamente o contacta por WhatsApp.';
-        });
-    });
-  }
-
-  // Pagos (simulación / placeholders)
-  const btnWebpay = document.getElementById('btn-webpay');
-  const btnMP = document.getElementById('btn-mercadopago');
-
-  // En vez de mostrar un alert local, invocamos la función que llama al backend y redirige
-  if (btnWebpay) {
-    btnWebpay.addEventListener('click', (e) => {
-      e.preventDefault();
-      const price = Number(btnWebpay.dataset.price || '30000');
-      payWithWebpay(price);
-    });
-  }
-
-  if (btnMP) {
-    btnMP.addEventListener('click', (e) => {
-      e.preventDefault();
-      const price = Number(btnMP.dataset.price || '30000');
-      // placeholder para MercadoPago — cambiar por llamada a función backend cuando la implementes
-      alert('Pago de MercadoPago todavía no implementado (simulación).');
-    });
-  }
-
-  // Ajuste: calcular altura del header y exponerla en CSS para offsets
-  const headerEl = document.querySelector('.site-header');
-
-  function setHeaderHeightVar() {
-    const h = headerEl ? headerEl.offsetHeight : 0;
-    document.documentElement.style.setProperty('--header-height', `${h}px`);
-  }
-  setHeaderHeightVar();
-  window.addEventListener('resize', setHeaderHeightVar);
-
-  // Smooth scroll teniendo en cuenta el header (mejor que scrollIntoView si header es fixed)
-  document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const targetId = btn.dataset.target;
-      if (!targetId) return;
-      const target = document.getElementById(targetId);
-      if (!target) return;
-
-      const headerHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || (headerEl ? headerEl.offsetHeight : 0);
-      const extra = 12; // espacio adicional opcional
-      const top = target.getBoundingClientRect().top + window.scrollY - headerHeight - extra;
-
-      window.scrollTo({ top, behavior: 'smooth' });
-    });
-  });
-
-  async function payWithWebpay(amount = 30000) {
-    const btn = document.getElementById('btn-webpay');
-    const origText = btn?.textContent || 'Pagar';
-    try {
-      if (btn) { btn.disabled = true; btn.textContent = 'Iniciando pago...'; }
-
-      // recoger datos del formulario (asegúrate que los ids existen)
-      const nombre = (document.getElementById('nombre')?.value || '').trim();
-      const email = (document.getElementById('email')?.value || '').trim();
-      const fecha = (document.getElementById('fecha')?._flatpickr?.selectedDates?.[0]?.toISOString()) || (document.querySelector('.flatpickr-input[altinput]')?.value) || (document.getElementById('fecha')?.value || '');
-      const hora = (document.getElementById('hora')?.value || '').trim();
-
-      const body = {
-        amount,
-        metadata: { nombre, email, fecha, hora }
-      };
-
-      const res = await fetch('/.netlify/functions/create-webpay', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      });
-
-      if (!res.ok) {
-        const txt = await res.text().catch(()=>null);
-        console.error('create-webpay HTTP error', res.status, txt);
-        alert('No se pudo iniciar el pago. Revisa la consola.');
-        return;
-      }
-
-      const json = await res.json();
-      // backend devuelve checkoutUrl (o url) que ya contiene return_url+meta
-      const url = json.checkoutUrl || json.url || (json.body && json.body.url) || json.redirectUrl;
-      if (!url) {
-        console.error('Respuesta inválida de create-webpay:', json);
-        alert('No se pudo iniciar el pago. Revisa la consola.');
-        return;
-      }
-
-      // abrir en la misma pestaña o en nueva según tu UX; aquí usamos window.open si quieres popup:
-      // window.open(url, '_blank');
-      window.location.href = url;
-
-    } catch (err) {
-      console.error('Error iniciando Webpay:', err);
-      alert('Error iniciando el pago (ver consola).');
-    } finally {
-      if (btn) { btn.disabled = false; btn.textContent = origText; }
-    }
-  }
-
-  // Vincular al botón (asegúrate que el DOM tiene #btn-webpay)
-  document.addEventListener('DOMContentLoaded', () => {
-    const btnWebpay = document.getElementById('btn-webpay');
-    if (btnWebpay) {
-      btnWebpay.addEventListener('click', (e) => {
-        e.preventDefault();
-        const price = Number(btnWebpay.dataset.price || '30000');
-        payWithWebpay(price);
-      });
-    }
-  });
-
-  // Añade esto en el archivo JS que controla el botón de pago (reemplaza el selector si es necesario)
-  async function iniciarPago(amount) {
-    // abrir ventana de forma síncrona para evitar bloqueo de popup
-    const win = window.open('', '_blank');
-    try {
-      const resp = await fetch('/.netlify/functions/create-webpay', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount })
-      });
-
-      if (!resp.ok) {
-        const text = await resp.text();
-        console.error('create-webpay HTTP error', resp.status, text);
-        win.close();
-        alert('No se pudo iniciar el pago. Revisa la consola.');
-        return;
-      }
-
-      const json = await resp.json();
-      console.log('create-webpay response', json);
-
-      const checkoutUrl = json.checkoutUrl || (json.body && json.body.url) || (json.body && json.body.initPoint) || null;
-      const token = json.token || (json.body && (json.body.token || json.body.token_ws));
-
-      if (checkoutUrl) {
-        win.location.href = checkoutUrl;
-        return;
-      }
-
-      if (token) {
-        const returnUrl = new URL(window.location.origin + '/.netlify/functions/webpay-return');
-        returnUrl.searchParams.set('token_ws', token);
-        win.location.href = returnUrl.toString();
-        return;
-      }
-
-      console.error('No checkoutUrl ni token en respuesta', json);
-      win.close();
-      alert('Respuesta inválida del servidor. Revisa la consola.');
-
-    } catch (err) {
-      console.error('Error iniciando pago', err);
-      try { win.close(); } catch (e) {}
-      alert('Error de red. Revisa la consola.');
-    }
-  }
-
-  // Ejemplo de conexión al botón (ajusta selector)
-  document.addEventListener('DOMContentLoaded', () => {
-    const btn = document.querySelector('#btn-pagar-webpay') || document.querySelector('[data-pay-webpay]');
-    if (btn) btn.addEventListener('click', (e) => { e.preventDefault(); iniciarPago(30000); });
+  styledBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const native = findNativeBtn();
+    if (native) native.click();
+    else console.warn('MercadoPago: botón nativo aún no está disponible.');
   });
 });
 
-{
-  // Reemplaza la función payWithWebpay / duplicados por esta implementación única
-  async function iniciarPago(amount = 30000, btnEl = null) {
-    // abrir ventana de forma síncrona en el click para evitar bloqueo
-    const win = window.open('', '_blank');
-    if (btnEl) {
-      btnEl.dataset._origText = btnEl.textContent || '';
-      btnEl.disabled = true;
-      btnEl.textContent = 'Iniciando pago...';
+// Limpieza temporal del flujo Webpay: sin backend ni sandbox
+document.addEventListener('DOMContentLoaded', () => {
+  // 1) Limpiar cualquier parámetro de retorno previo en la URL y mensajes
+  try {
+    const url = new URL(location.href);
+    const paramsToRemove = ['payment','token','TBK_TOKEN','status','provider_status','transaction','meta'];
+    const hadParams = paramsToRemove.some(k => url.searchParams.has(k));
+    if (hadParams) {
+      paramsToRemove.forEach(k => url.searchParams.delete(k));
+      history.replaceState({}, document.title, url.toString());
     }
-
-    try {
-      const resp = await fetch('/.netlify/functions/create-webpay', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount })
-      });
-
-      if (!resp.ok) {
-        const txt = await resp.text();
-        console.error('create-webpay HTTP error', resp.status, txt);
-        win.close();
-        alert('No se pudo iniciar el pago. Revisa la consola.');
-        return;
-      }
-
-      const json = await resp.json();
-      console.log('create-webpay response', json);
-
-      // soportar varias formas de respuesta del backend (mock/SDK/rest)
-      const checkoutUrl =
-        json.checkoutUrl ||
-        json.url ||
-        (json.body && (json.body.url || json.body.initPoint)) ||
-        (json.data && (json.data.url));
-      const token =
-        json.token ||
-        json.token_ws ||
-        (json.body && (json.body.token || json.body.token_ws)) ||
-        (json.data && (json.data.token || json.data.token_ws));
-
-      if (checkoutUrl) {
-        win.location.href = checkoutUrl;
-        return;
-      }
-
-      if (token) {
-        const returnUrl = new URL(window.location.origin + '/.netlify/functions/webpay-return');
-        returnUrl.searchParams.set('token_ws', token);
-        win.location.href = returnUrl.toString();
-        return;
-      }
-
-      console.error('Respuesta inválida de create-webpay (sin checkoutUrl ni token):', json);
-      win.close();
-      alert('Respuesta inválida del servidor. Revisa la consola.');
-    } catch (err) {
-      console.error('Error iniciando pago', err);
-      try { win.close(); } catch (e) { /* ignore */ }
-      alert('Error de red. Revisa la consola.');
-    } finally {
-      if (btnEl) {
-        btnEl.disabled = false;
-        btnEl.textContent = btnEl.dataset._origText || 'Pagar';
-        delete btnEl.dataset._origText;
-      }
+    const confirmEl = document.getElementById('confirmacion');
+    if (confirmEl) {
+      confirmEl.classList.remove('text-success','text-danger');
+      if (confirmEl.dataset.userMessage !== '1') confirmEl.textContent = '';
     }
+  } catch (_) {}
+
+  // FIX: si existe el formulario Webpay real, no interceptar ni clonar el botón
+  if (document.getElementById('webpay-form')) {
+    return; // deja que el submit haga POST a Webpay
   }
 
-  // Asegurar un único listener que use iniciarPago
-  const existingBtn = document.getElementById('btn-webpay') || document.querySelector('[data-pay-webpay]');
-  if (existingBtn) {
-    // quitar listeners previos por seguridad
-    existingBtn.replaceWith(existingBtn.cloneNode(true));
-    const btn = document.getElementById('btn-webpay') || document.querySelector('[data-pay-webpay]');
+  // 2) Fallback solo si NO existe el formulario real (ambiente viejo)
+  const btnWebpay = document.getElementById('btn-webpay');
+  if (btnWebpay) {
+    const clone = btnWebpay.cloneNode(true); // elimina listeners previos
+    clone.disabled = false;
+    clone.title = 'El pago estará disponible pronto';
+    clone.addEventListener('click', (e) => {
+      e.preventDefault();
+      alert('Pronto integraremos el nuevo flujo de pago. Por ahora este botón no inicia transacciones.');
+    });
+    btnWebpay.replaceWith(clone);
+  }
+});
+
+// Ajuste de unidad de viewport para móviles (100vh real)
+document.addEventListener('DOMContentLoaded', function () {
+  const setVh = () => {
+    const h = (window.visualViewport?.height || window.innerHeight) * 0.01;
+    document.documentElement.style.setProperty('--vh', `${h}px`);
+  };
+  setVh();
+  window.addEventListener('resize', setVh);
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', setVh);
+});
+
+// Fondo bloque pagos: mismo patrón que hero/áreas usando .block-bg + --bg-url
+document.addEventListener('DOMContentLoaded', function () {
+  const sec = document.querySelector('#pago-seguro, #pago, #pagos');
+  if (!sec) return;
+
+  // asegura la clase y el nodo .block-bg como primer hijo
+  if (!sec.classList.contains('payments-section')) sec.classList.add('payments-section');
+  let bg = sec.querySelector(':scope > .block-bg');
+  if (!bg) {
+    bg = document.createElement('div');
+    bg.className = 'block-bg';
+    sec.prepend(bg);
+  }
+
+  // intenta cargar en este orden (como en los otros bloques)
+  const candidates = [
+    './assets/bg-payments.webp',
+    './assets/bg-payments@2x.webp',
+    './assets/bg-payments.jpg',
+    './assets/bg-payments.jpeg',
+    './assets/bg-payments.png'
+  ];
+
+  const load = (i = 0) => {
+    if (i >= candidates.length) return;
+    const src = candidates[i];
+    const img = new Image();
+    img.onload = () => {
+      // fija la variable que consume .block-bg::before
+      bg.style.setProperty('--bg-url', `url("${src}")`);
+      console.debug('payments background set:', src);
+    };
+    img.onerror = () => load(i + 1);
+    img.src = src;
+  };
+  load();
+});
+
+/* Scroll-spy robusto + activar al click (mantiene clases/IDs existentes) */
+document.addEventListener('DOMContentLoaded', () => {
+  const header = document.querySelector('.site-header');
+  const navBtns = Array.from(document.querySelectorAll('.header-nav .nav-btn'));
+
+  const headerHeight = () => Math.ceil(header?.getBoundingClientRect().height || 0);
+  const setActive = (id) => navBtns.forEach(b => b.classList.toggle('active', b.dataset.target === id));
+  const scrollToId = (id) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY - headerHeight() - 8;
+    window.scrollTo({ top: Math.max(0, Math.floor(top)), behavior: 'smooth' });
+  };
+
+  // Marca activo inmediatamente al click y luego hace scroll
+  navBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
-      const price = Number(btn.dataset.price || '30000');
-      iniciarPago(price, btn);
+      const id = btn.dataset.target;
+      if (!id) return;
+      setActive(id);
+      scrollToId(id);
     });
+  });
+
+  // Scroll-spy con corrección cuando se llega al fondo (bloque pago)
+  const sectionIds = navBtns.map(b => b.dataset.target).filter(Boolean);
+  const onScroll = () => {
+    const offset = window.scrollY + headerHeight() + 12;
+    let current = sectionIds[0] || null;
+    for (const id of sectionIds) {
+      const el = document.getElementById(id);
+      if (!el) continue;
+      const top = el.getBoundingClientRect().top + window.scrollY;
+      if (offset >= top - 1) current = id;
+    }
+    // Si estamos pegados al final del documento, forzar el último (pago-seguro)
+    const nearBottom = window.innerHeight + window.scrollY >= (document.documentElement.scrollHeight - 2);
+    if (nearBottom && sectionIds.length) current = sectionIds[sectionIds.length - 1];
+    if (current) setActive(current);
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  onScroll();
+});
+
+// Quita el intercept que mostraba el popup y deja enviar el form real
+document.addEventListener('DOMContentLoaded', () => {
+  // Limpia posibles parámetros de retorno
+  try {
+    const url = new URL(location.href);
+    ['payment','token','TBK_TOKEN','status','provider_status','transaction','meta']
+      .forEach(k => url.searchParams.delete(k));
+    history.replaceState({}, document.title, url.toString());
+  } catch (_) {}
+
+  const form = document.getElementById('webpay-form');
+  const btnWebpay = document.getElementById('btn-webpay');
+
+  if (form && btnWebpay) {
+    btnWebpay.disabled = false;
+    btnWebpay.title = 'Pagar con Webpay';
+    // No reemplazar ni prevenir el submit (se deja funcional)
+    return;
   }
-}
-{
-  // Elimina/ignora cualquier otra definición duplicada de iniciarPago o payWithWebpay
-  // (no añadir más handlers aquí)
-}
+
+  // Fallback solo si no existe el form (ambiente sin HTML actualizado)
+  const fallbackBtn = document.getElementById('btn-webpay');
+  if (fallbackBtn) {
+    const clone = fallbackBtn.cloneNode(true);
+    clone.addEventListener('click', (e) => {
+      e.preventDefault();
+      alert('Pronto integraremos el nuevo flujo de pago. Por ahora este botón no inicia transacciones.');
+    });
+    fallbackBtn.replaceWith(clone);
+  }
+});
+
+// Integración Webpay: sincroniza el monto desde data-price o el precio visible
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('webpay-form');
+  const btn = document.getElementById('btn-webpay');
+  const montoInput = document.getElementById('webpay-monto');
+  if (!form || !btn || !montoInput) return;
+
+  const syncAmount = () => {
+    let amount = btn.dataset.price || (document.getElementById('precio-servicio')?.textContent || '');
+    amount = String(amount).replace(/[^\d]/g, '');
+    if (amount) montoInput.value = amount;
+  };
+
+  syncAmount();
+  btn.addEventListener('click', syncAmount);
+  form.addEventListener('submit', syncAmount);
+});
