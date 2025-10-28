@@ -1,29 +1,47 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Camila Hernández - Psicóloga Clínica</title>
-  <meta name="description" content="Camila Hernández, psicóloga clínica. Atención online para adolescentes y adultos: ansiedad, autoestima, relaciones y desarrollo personal. Reserva tu sesión y paga de forma segura." />
-  <meta name="keywords" content="psicóloga, terapia online, ansiedad, autoestima, desarrollo personal, Camila Hernández" />
-  <link rel="canonical" href="http://localhost/index.html" />
+  <meta name="description"
+    content="Camila Hernández, psicóloga clínica. Atención online para adolescentes y adultos: ansiedad, autoestima, relaciones y desarrollo personal. Reserva tu sesión y paga de forma segura." />
+  <meta name="keywords"
+    content="psicóloga, terapia online, ansiedad, autoestima, desarrollo personal, Camila Hernández" />
+  <link rel="canonical" href="https://psicologa-camila-hernandez.netlify.app/" />
+  <meta name="robots" content="index,follow" />
 
   <!-- Open Graph -->
   <meta property="og:title" content="Camila Hernández - Psicóloga Clínica" />
-  <meta property="og:description" content="Atención online para adolescentes y adultos. Reserva tu sesión y paga de forma segura." />
+  <meta property="og:description"
+    content="Atención online para adolescentes y adultos. Reserva tu sesión y paga de forma segura." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="http://localhost/index.html" />
-  <meta property="og:image" content="./assets/bg-hero.webp" />
+  <meta property="og:url" content="https://psicologa-camila-hernandez.netlify.app/" />
+  <meta property="og:image" content="https://psicologa-camila-hernandez.netlify.app/assets/bg-hero.webp" />
+  <meta property="og:site_name" content="Camila Hernández" />
+  <meta property="og:locale" content="es_CL" />
 
-  <!-- JSON-LD (Organization / Person minimal) -->
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Camila Hernández - Psicóloga Clínica">
+  <meta name="twitter:description"
+    content="Atención online para adolescentes y adultos. Reserva tu sesión y paga de forma segura.">
+  <meta name="twitter:image" content="https://psicologa-camila-hernandez.netlify.app/assets/bg-hero.webp">
+
+  <!-- Hreflang -->
+  <link rel="alternate" href="https://psicologa-camila-hernandez.netlify.app/" hreflang="es-cl">
+  <link rel="alternate" href="https://psicologa-camila-hernandez.netlify.app/" hreflang="x-default">
+
+  <!-- JSON-LD (Person) -->
   <script type="application/ld+json">
   {
     "@context":"https://schema.org",
     "@type":"Person",
     "name":"Camila Hernández",
     "jobTitle":"Psicóloga",
-    "url":"http://localhost/index.html",
-    "description":"Psicóloga con atención online. Sesiones individuales."
+    "url":"https://psicologa-camila-hernandez.netlify.app/",
+    "description":"Psicóloga con atención online. Sesiones para adolescentes y adultos."
   }
   </script>
 
@@ -38,17 +56,18 @@
   <link rel="stylesheet" href="./style.css">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" href="./assets/bg-hero.webp" as="image">
+  <!-- fondo bloque pagos -->
+  <link rel="preload" href="./assets/bg-payments.webp" as="image">
 
-  <!-- Favicon / icono de pestaña (usar assets/logo.png) -->
-  <link rel="icon" href="./assets/logo.png?v=2" type="image/png" sizes="32x32">
-  <link rel="icon" href="./assets/logo.png?v=2" type="image/png" sizes="16x16">
-  <link rel="shortcut icon" href="./assets/logo.png?v=2" type="image/png">
-  <link rel="apple-touch-icon" href="./assets/logo.png?v=2">
-  <link rel="mask-icon" href="./assets/logo.png?v=2" color="#00a99d">
-  <meta name="msapplication-TileImage" content="./assets/logo.png?v=2">
+  <!-- Favicon / icono de pestaña (usar logo.png) -->
+  <link rel="icon" href="./assets/logo.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="./assets/logo.png" type="image/png" sizes="16x16">
+  <link rel="shortcut icon" href="./assets/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="./assets/logo.png">
+  <meta name="msapplication-TileImage" content="./assets/logo.png">
   <meta name="theme-color" content="#00a99d">
-  <!-- Fin favicon -->
 </head>
+
 <body>
   <!-- HEADER: botones de navegación rápida -->
   <header class="site-header">
@@ -62,6 +81,7 @@
         <button class="nav-btn" data-target="sobre-mi">Sobre mí</button>
         <button class="nav-btn" data-target="areas">Áreas de atención</button>
         <button class="nav-btn" data-target="servicios">Agendar</button>
+        <button class="nav-btn" data-target="pago-seguro">Pago</button>
       </nav>
     </div>
   </header>
@@ -71,15 +91,16 @@
     <div class="block-bg" data-speed="0.20" aria-hidden="true"></div>
 
     <div class="container-lg text-center py-4">
-     <h1>Camila Hernández</h1>
-     <p class="lead">Psicóloga • Atención Online</p>
+      <h1>Camila Hernández</h1>
+      <p class="lead">Psicóloga • Atención Online</p>
     </div>
 
     <div class="container-lg">
       <div class="hero-content row align-items-center py-5">
         <div class="col-md-4 text-center">
           <div class="hero-photo card p-3 shadow-sm mx-auto" style="max-width:360px;">
-            <img src="./assets/camila.png" alt="Camila Hernández" class="foto-camila img-fluid rounded" loading="lazy" width="360" height="480">
+            <img src="./assets/camila.png" alt="Camila Hernández" class="foto-camila img-fluid rounded" loading="lazy"
+              width="360" height="480">
           </div>
         </div>
 
@@ -90,30 +111,28 @@
             <!-- panel 1: excerpt (visible por defecto) -->
             <div id="sobre-excerpt" class="content-panel" aria-hidden="false">
               <p><strong>Hola soy Camila Hernández</strong></p>
-
               <p>
-                Soy Psicóloga egresada de la Universidad de Magallanes, cuento con experiencia en intervenciones psicoeducativas y un fuerte enfoque en el acompañamiento terapéutico de adolescentes y adultos.
+                Soy Psicóloga egresada de la Universidad de Magallanes, cuento con experiencia en intervenciones
+                psicoeducativas y un fuerte enfoque en el acompañamiento terapéutico de adolescentes y adultos.
               </p>
-
               <p>
-                Mi práctica se caracteriza por una comunicación empática y efectiva, lo que me permite generar vínculos sólidos y espacios seguros para el desarrollo personal.
+                Mi práctica se caracteriza por una comunicación empática y efectiva, lo que me permite generar vínculos
+                sólidos y espacios seguros para el desarrollo personal.
               </p>
-
               <div class="mt-2">
                 <button id="btn-mas-sobre" class="btn btn-outline-primary btn-sm">Más sobre mi</button>
               </div>
             </div>
-
             <!-- panel 2: more (oculto por defecto) -->
             <div id="sobre-more" class="content-panel" aria-hidden="true" style="display:none;">
               <p><strong>Fuera de la consulta 😎</strong></p>
               <p>
-                Al igual que muchas de mis pacientes, en algún momento perdí el foco en la vida. Fue gracias al pole dance, disciplina que practico hace algunos años, que logré reconectar con una parte de mí misma que no conocía: <em>fuerte, libre y auténtica</em>.
+                Al igual que muchas de mis pacientes, en algún momento perdí el foco en la vida.
               </p>
               <p>
-                Hoy, esa experiencia personal me inspira a acompañar a otras mujeres en sus propios procesos de transformación.
+                Fue gracias al pole dance, disciplina que practico hace algunos años, que logré reconectar con una parte
+                de mí misma que no conocía: <em>fuerte, libre y auténtica</em>
               </p>
-
               <div class="mt-2">
                 <button id="btn-menos-sobre" class="btn btn-outline-secondary btn-sm">Volver</button>
               </div>
@@ -127,42 +146,39 @@
   <!-- INFO BLOCK (tres imágenes) - añadir id="areas" -->
   <section id="areas" class="block-info">
     <div class="block-bg" data-speed="0.08" aria-hidden="true"></div>
+
     <div class="container-lg my-5">
-      <div class="row text-center">
+    <h2 id="titulo-acompanamiento" class="section-title text-center mb-5">Acompañamiento psicológico</h2>
+
+      <div class="row text-center equalize justify-content-center">
         <div class="col-md-4 mb-4">
-          <div class="recorte posicion-porque mx-auto" style="max-width:320px;">
-            <img src="./assets/porque.png"
-                 alt="Por qué atenderte"
-                 loading="lazy"
-                 width="320" height="427"
-                 style="width:100%;height:100%;object-fit:cover;">
+          <div class="feature-card h-100 d-flex flex-column align-items-center text-center">
+            <div class="recorte posicion-porque mx-auto" style="max-width:320px;">
+              <img src="./assets/porque.png" alt="Por qué atenderte" loading="lazy" width="320" height="427" style="width:100%;height:100%;object-fit:cover;">
+            </div>
+            <h3 class="feature-title mt-3">¿Por qué atenderte conmigo?</h3>
+            <p class="feature-desc">El acompañamiento psicológico permite reconocer tus fortalezas y explorar recursos frente a lo que te preocupa. Es un espacio para ser tú.</p>
           </div>
-          <h3 class="mt-3">¿Por qué atenderte conmigo?</h3>
-          <p>El acompañamiento psicológico permite reconocer tus fortalezas y explorar recursos frente a lo que te preocupa. Es un espacio para ser tú.</p>
         </div>
 
         <div class="col-md-4 mb-4">
-          <div class="recorte posicion-quienes mx-auto" style="max-width:320px;">
-            <img src="./assets/quienes.png"
-                 alt="Quiénes se atienden"
-                 loading="lazy"
-                 width="320" height="427"
-                 style="width:100%;height:100%;object-fit:cover;">
+          <div class="feature-card h-100 d-flex flex-column align-items-center text-center">
+            <div class="recorte posicion-quienes mx-auto" style="max-width:320px;">
+              <img src="./assets/quienes.png" alt="Quiénes se atienden" loading="lazy" width="320" height="427" style="width:100%;height:100%;object-fit:cover;">
+            </div>
+            <h3 class="feature-title mt-3">¿Quiénes se atienden conmigo?</h3>
+            <p class="feature-desc">Adolescentes y adultos que buscan apoyo para conocerse mejor, fortalecer su autoestima y mejorar sus relaciones.</p>
           </div>
-          <h3 class="mt-3">¿Quiénes se atienden conmigo?</h3>
-          <p>Adolescentes y adultos que buscan apoyo para conocerse mejor, fortalecer su autoestima y mejorar sus relaciones.</p>
         </div>
 
         <div class="col-md-4 mb-4">
-          <div class="recorte posicion-como mx-auto" style="max-width:320px;">
-            <img src="./assets/como.png"
-                 alt="Cómo lo logramos"
-                 loading="lazy"
-                 width="320" height="427"
-                 style="width:100%;height:100%;object-fit:cover;">
+          <div class="feature-card h-100 d-flex flex-column align-items-center text-center">
+            <div class="recorte posicion-como mx-auto" style="max-width:320px;">
+              <img src="./assets/como.png" alt="Cómo lo logramos" loading="lazy" width="320" height="427" style="width:100%;height:100%;object-fit:cover;">
+            </div>
+            <h3 class="feature-title mt-3">¿Cómo lo logramos?</h3>
+            <p class="feature-desc">Trabajamos con herramientas que impulsan el autoconocimiento, el bienestar y el desarrollo personal.</p>
           </div>
-          <h3 class="mt-3">¿Cómo lo logramos?</h3>
-          <p>Trabajamos con herramientas que impulsan el autoconocimiento, el bienestar y el desarrollo personal.</p>
         </div>
       </div>
     </div>
@@ -198,7 +214,8 @@
         <div class="col-md-6">
           <label for="fecha" class="form-label">Fecha</label>
           <div class="date-wrapper">
-            <input type="text" id="fecha" class="form-control flatpickr-input" placeholder="Selecciona fecha" aria-label="Fecha" required>
+            <input type="text" id="fecha" class="form-control flatpickr-input" placeholder="Selecciona fecha"
+              aria-label="Fecha" required>
             <i class="fa fa-calendar calendar-icon" aria-hidden="true"></i>
           </div>
         </div>
@@ -215,7 +232,8 @@
         <div class="col-12 text-center">
           <button id="btn-reservar" type="submit" class="btn btn-primary">
             <span id="btn-text">Reservar cita</span>
-            <span id="btn-spinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+            <span id="btn-spinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status"
+              aria-hidden="true"></span>
           </button>
         </div>
       </form>
@@ -223,21 +241,37 @@
     </div>
   </section>
 
-  <section class="text-center py-5">
-    <h2>Pago seguro</h2>
+  <!-- Pago seguro (bloque 4) -->
+  <section id="pago-seguro" class="payments-section text-center">
+  <div class="block-bg" aria-hidden="true"></div>
+  <div class="container-lg">
+    <h2 id="titulo-pago-seguro" class="section-title text-center">Pago seguro</h2>
     <p>Realiza el pago de tu sesión a través de Webpay o MercadoPago.</p>
     <div class="d-flex justify-content-center gap-2">
-      <button id="btn-webpay" data-price="30000" class="btn">Pagar con Webpay</button>
-      <button id="btn-mercadopago" class="btn btn-warning" data-price="30000">Pagar con MercadoPago</button>
+      <form id="webpay-form" name="rec20108_btn1" method="post" action="https://www.webpay.cl/backpub/external/form-pay" target="_blank" class="d-inline">
+        <input type="hidden" name="idFormulario" value="329347" />
+        <input type="hidden" name="monto" id="webpay-monto" value="30000" />
+        <button id="btn-webpay" type="submit" class="btn btn-outline-success" data-price="30000">
+          Pagar con Webpay
+        </button>
+      </form>
+      <button id="btn-mercadopago" class="btn btn-outline-warning" data-price="30000">Pagar con MercadoPago</button>
+     <!-- MercadoPago: script oficial. Genera un botón nativo oculto que disparamos desde el nuestro -->
+     <span id="mp-script-container">
+       <script id="mp-checkout" src="https://www.mercadopago.cl/integrations/v1/web-payment-checkout.js"
+         data-preference-id="232641053-46265c53-26f5-4c69-8915-5e2f482f5897" data-source="button">
+       </script>
+     </span>
     </div>
-    <p class="small text-muted mt-2">Simulación: implementación completa requiere credenciales y backend.</p>
-  </section>
-
-  <section class="text-center py-4">
-    <a href="https://api.whatsapp.com/send/?phone=56939456619" target="_blank" class="btn btn-success">
-      <i class="fab fa-whatsapp me-2"></i> Agendar por WhatsApp
-    </a>
-    <small class="d-block mt-2 text-muted">En línea</small>
+        <!-- WhatsApp dentro de pago-seguro -->
+        <div class="text-center py-4">
+          <p>Comunicate con nosotros</p>
+          <a href="https://api.whatsapp.com/send/?phone=56939456619" target="_blank" class="btn btn-outline-success">
+            <i class="fab fa-whatsapp me-2"></i> Agendar por WhatsApp
+          </a>
+          <small class="d-block mt-2 text-muted">En línea</small>
+        </div>
+     </div>
   </section>
 
   <footer class="text-center py-4 bg-dark text-white">
@@ -251,13 +285,11 @@
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-  <!-- EmailJS SDK (si usas EmailJS) -->
+  <!-- EmailJS SDK -->
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
   <script>
-    // Inicializa EmailJS si corresponde (reemplaza por tu key pública)
-    if (window.emailjs) {
-      try { emailjs.init('AlEkFVEA9mwdEcFcp'); } catch (e) { /* no bloquear si falla */ }
-    }
+    // Public Key desde EmailJS (Account → API keys)
+    emailjs.init('AlEkFVEA9mwdEcFcp');
   </script>
 
   <!-- Tu script (defer para asegurar que el DOM y librerías estén listas) -->
@@ -273,4 +305,5 @@
     </style>
   </noscript>
 </body>
+
 </html>
