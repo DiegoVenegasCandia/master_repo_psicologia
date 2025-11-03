@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="x-apple-disable-message-reformatting">
+  <title>Nueva reserva</title>
+  <style>
+    /* Reset y reglas seguras para email clients */
+    html,body{margin:0!important;padding:0!important;background:#F5F7F8!important;height:100%!important}
+    table,td{border-collapse:collapse!important;mso-table-lspace:0pt!important;mso-table-rspace:0pt!important}
+    img{border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;display:block;height:auto;max-width:100%}
+    a{text-decoration:none;color:inherit}
+    body,table,td,p,a,li,blockquote{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
+    .ExternalClass{width:100%}
+    .ReadMsgBody{width:100%}
+
+    /* Tipografías y colores */
+    .title{font-weight:700;font-size:22px;line-height:1.3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#1F2A33;margin:0}
+    .muted{color:#5F6B76;font-weight:400;font-size:14px;line-height:1.5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;margin:0}
+
+    /* Contenedor y tarjeta */
+    .card{border:1px solid #E6EAEE;border-radius:12px;background:#FFFFFF}
+    .card-inner{padding:16px}
+    .chip{display:inline-block;background:#E6FBF9;color:#007E77;border-radius:12px;padding:10px 12px;font-weight:700;font-size:13px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif}
+
+    .label{color:#5F6B76;padding:8px 0;width:36%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif}
+    .value{color:#18363A;padding:8px 0;font-weight:600;font-size:15px;line-height:1.4;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif}
+
+    /* Responsivo */
+    @media only screen and (max-width:600px){
+      .title{font-size:20px!important}
+      .logo-badge{padding:10px 12px!important;border-radius:12px!important}
+      .stack .label,.stack .value{display:block;width:auto!important}
+      .stack .label{padding-top:10px}
+      .stack .value{padding-top:2px}
+      .wrap{padding-left:16px!important;padding-right:16px!important}
+    }
+  </style>
+</head>
+<body style="background:#F5F7F8;margin:0;padding:0;">
+  <!-- Preheader (oculto) -->
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;font-size:1px;line-height:1px;color:#F5F7F8">
+    Nueva reserva: {{fec}} {{hor}} — {{nom}} — {{mot}}
+  </div>
+
+  <!-- Wrapper -->
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;background:#F5F7F8">
+    <tr>
+      <td align="center" style="padding:20px 10px">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;background:#FFFFFF;border-radius:16px;overflow:hidden">
+          <!-- Header -->
+          <tr>
+            <td class="wrap" align="center" style="padding:20px 24px;background:#FFFFFF">
+              <a href="https://psicologa-camila-hernandez.netlify.app/" target="_blank" rel="noopener" style="display:inline-block">
+                <span class="logo-badge" style="display:inline-block;background:#E6FBF9;padding:12px 16px;border-radius:14px">
+                  <!-- Logo adaptativo -->
+                  <img src="https://psicologa-camila-hernandez.netlify.app/assets/logo.png"
+                       alt="Camila Hernández — Psicóloga"
+                       width="160" height="64" style="width:160px;height:auto;display:block">
+                </span>
+              </a>
+              <div style="height:10px"></div>
+              <p class="title" style="text-align:center">Nueva reserva recibida</p>
+              <p class="muted" style="text-align:center;margin-top:8px">Hay una nueva solicitud desde el sitio web.</p>
+            </td>
+          </tr>
+
+          <!-- Detalles -->
+          <tr>
+            <td class="wrap" style="padding:20px 24px;background:#FFFFFF">
+              <table role="presentation" width="100%" class="card" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+                <tr>
+                  <td class="card-inner">
+                    <span class="chip">Detalles de la cita</span>
+                    <div style="height:8px"></div>
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="stack" style="width:100%;">
+                      <tr>
+                        <td class="label">Nombre</td>
+                        <td class="value">{{nom}}</td>
+                      </tr>
+                      <tr>
+                        <td class="label">Apellido</td>
+                        <td class="value">{{ape}}</td>
+                      </tr>
+                      <tr>
+                        <td class="label">Email</td>
+                        <td class="value">{{mail}}</td>
+                      </tr>
+                      <tr>
+                        <td class="label">Teléfono</td>
+                        <td class="value">{{tel}}</td>
+                      </tr>
+                      <tr>
+                        <td class="label">Edad</td>
+                        <td class="value">{{ed}}</td>
+                      </tr>
+                      <tr>
+                        <td class="label">Motivo</td>
+                        <td class="value">{{mot}}</td>
+                      </tr>
+                      <tr>
+                        <td class="label">Fecha</td>
+                        <td class="value">{{fec}}</td>
+                      </tr>
+                      <tr>
+                        <td class="label">Hora</td>
+                        <td class="value">{{hor}}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Botones -->
+          <tr>
+            <td class="wrap" style="padding:0 24px 12px 24px">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0;">
+                <tr>
+                  <td align="center" style="background:#00A99D;border-radius:999px;">
+                    <a href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ16wVv3yZXfpNH9ZjRgz2o48GaAR1p_OBbXx6_L3ntI64AQ3dIS4xjQtCtYUf1a0gPtHzWnXa3J?gv=true"
+                       target="_blank" rel="noopener"
+                       style="display:block;padding:14px 16px;color:#FFFFFF;font-weight:700;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;text-decoration:none;border-radius:999px;">
+                      Abrir agenda
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="wrap" style="padding:0 24px 20px 24px">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0;">
+                <tr>
+                  <td align="center" style="background:#0F2430;border-radius:999px;">
+                    <a href="https://api.whatsapp.com/send?phone=56939456619&text=Hola%2C%20te%20escribo%20por%20la%20reserva%20de%20{{fec}}%20a%20las%20{{hor}}.%20Motivo%3A%20{{mot}}"
+                       target="_blank" rel="noopener"
+                       style="display:block;padding:14px 16px;color:#FFFFFF;font-weight:700;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;text-decoration:none;border-radius:999px;">
+                      Responder por WhatsApp
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="wrap" style="padding:0 24px 12px 24px">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0;">
+                <tr>
+                  <td align="center" style="background:#1AA6B7;border-radius:999px;">
+                    <a href="{{url}}" target="_blank" rel="noopener"
+                       style="display:block;padding:14px 16px;color:#FFFFFF;font-weight:700;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;text-decoration:none;border-radius:999px;">
+                      Ver cita en Google Calendar
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Confirm / Cancel -->
+          <tr>
+            <td class="wrap" style="padding:0 24px 12px 24px">
+              <div style="margin:32px 0; text-align:center;">
+                <a href="{{confirm_url}}" target="_blank" rel="noopener"
+                   style="display:inline-block; background:#1aa6b7; color:#fff; font-weight:600; padding:12px 28px; border-radius:8px; text-decoration:none; margin:0 8px 12px 0;">
+                  Confirmar cita
+                </a>
+                <a href="{{cancel_url}}" target="_blank" rel="noopener"
+                   style="display:inline-block; background:#e74c3c; color:#fff; font-weight:600; padding:12px 28px; border-radius:8px; text-decoration:none; margin:0 0 12px 8px;">
+                  Cancelar cita
+                </a>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td class="wrap" style="padding:20px 24px">
+              <p class="muted" style="font-size:12px;margin:0;text-align:center">
+                Si este mensaje no corresponde, puedes ignorarlo. Correo generado automáticamente desde el formulario.
+              </p>
+              <div style="height:8px"></div>
+              <p class="muted" style="font-size:12px;margin:0;text-align:center">
+                © 2025 Camila Hernández — <a href="https://psicologa-camila-hernandez.netlify.app/" target="_blank" rel="noopener" style="color:#5F6B76;text-decoration:underline">psicologa-camila-hernandez.netlify.app</a>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

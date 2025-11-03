@@ -1829,5 +1829,26 @@ section#servicios { padding: 3rem 0; }
 
 }
 
+/* Forzar mayor altura del bloque 3 y estilo de las notas informativas */
+#form-cita-section,
+.form-cita-section {
+  min-height: 900px !important;
+  padding-bottom: 28px !important;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.agendar-note {
+  max-width: 900px;
+  margin: 12px auto 18px;
+  font-size: 15px;
+  color: #0b2533;
+  text-align: center;
+  padding: 6px 12px;
+}
+
 
 

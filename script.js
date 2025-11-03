@@ -95,8 +95,8 @@ document.addEventListener('DOMContentLoaded', function () {
     panel2.setAttribute('aria-hidden', 'true');
     btnMas.style.display = '';
 
-    function blurIfFocusedInside(el){
-      try { if (document.activeElement && el.contains(document.activeElement)) document.activeElement.blur(); } catch(e) {}
+    function blurIfFocusedInside(el) {
+      try { if (document.activeElement && el.contains(document.activeElement)) document.activeElement.blur(); } catch (e) { }
     }
 
     btnMas.addEventListener('click', function (e) {
@@ -154,13 +154,58 @@ document.addEventListener('DOMContentLoaded', function () {
 (function () {
   'use strict';
 
-  // Utilidades
+  // util
   const q = (s) => document.querySelector(s);
   const qAll = (s) => Array.from(document.querySelectorAll(s));
 
+  // Overlay helpers (idempotente)
+  (function overlayHelpers() {
+    if (window.showOverlay && window.hideOverlay) return;
+    function ensureOverlay() {
+      let ov = document.getElementById('page-loading-overlay');
+      const styleId = 'page-loading-overlay-style';
+      if (!document.getElementById(styleId)) {
+        const st = document.createElement('style');
+        st.id = styleId;
+        st.textContent = `
+#page-loading-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:saturate(120%) blur(2px);display:none;align-items:center;justify-content:center;z-index:9999}
+#page-loading-overlay .box{background:rgba(255,255,255,.95);color:#0b2533;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.2);padding:20px 24px;min-width:240px;display:flex;align-items:center;gap:14px;border:2px solid var(--calipso,#1aa6b7)}
+#page-loading-overlay .spinner{width:28px;height:28px;border:3px solid rgba(0,0,0,.1);border-top-color:var(--calipso,#1aa6b7);border-radius:50%;animation:spin 1s linear infinite}
+#page-loading-overlay .msg{font-weight:600;color:#0b2533}
+@keyframes spin{to{transform:rotate(360deg)}}
+`;
+        document.head.appendChild(st);
+      }
+      if (!ov) {
+        ov = document.createElement('div');
+        ov.id = 'page-loading-overlay';
+        ov.setAttribute('aria-hidden', 'true');
+        ov.innerHTML = `<div class="box"><div class="spinner" aria-hidden="true"></div><div class="msg">Procesando...</div></div>`;
+        document.body.appendChild(ov);
+      }
+      return ov;
+    }
+
+    window.showOverlay = function (message) {
+      const ov = ensureOverlay();
+      const msg = ov.querySelector('.msg');
+      if (msg && message) msg.textContent = message;
+      ov.style.display = 'flex';
+      ov.setAttribute('aria-hidden', 'false');
+    };
+
+    window.hideOverlay = function () {
+      const ov = document.getElementById('page-loading-overlay');
+      if (!ov) return;
+      ov.style.display = 'none';
+      ov.setAttribute('aria-hidden', 'true');
+    };
+  })();
+
+  // Main initialization when DOM ready
   document.addEventListener('DOMContentLoaded', function () {
 
-    // ===== Header / Nav / Panels (no tocar) =====
+    // ===== Header / Nav / basic UI =====
     try {
       const header = q('.site-header');
       const logoImg = q('.logo img');
@@ -178,45 +223,8 @@ document.addEventListener('DOMContentLoaded', function () {
         window.addEventListener('resize', adjustHeader);
       }
 
-      const navButtons = qAll('.nav-btn');
-      const logoLink = q('.logo-link');
-      const headerHeight = () => header ? Math.ceil(header.getBoundingClientRect().height) : 0;
-      const scrollToId = (id) => {
-        const target = document.getElementById(id);
-        if (!target) return;
-        const y = target.getBoundingClientRect().top + window.scrollY - headerHeight() - 8;
-        window.scrollTo({ top: Math.max(0, Math.floor(y)), behavior: 'smooth' });
-      };
-      const setActive = (id) => navButtons.forEach(b => b.classList.toggle('active', b.dataset.target === id));
-      navButtons.forEach(btn => btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (!btn.dataset.target) return;
-        scrollToId(btn.dataset.target);
-        setActive(btn.dataset.target);
-      }));
-      if (logoLink) logoLink.addEventListener('click', (e) => { e.preventDefault(); scrollToId('sobre-mi'); setActive('sobre-mi'); });
-      const sectionIds = navButtons.map(b => b.dataset.target).filter(Boolean);
-      const onScroll = () => {
-        const offset = window.scrollY + headerHeight() + 12;
-        let current = sectionIds[0] || null;
-        for (let i = 0; i < sectionIds.length; i++) {
-          const el = document.getElementById(sectionIds[i]);
-          if (!el) continue;
-          const top = el.getBoundingClientRect().top + window.scrollY;
-          if (offset >= top - 1) current = sectionIds[i];
-        }
-        // FIX: al llegar al fondo, marcar el último (pago-seguro)
-        const nearBottom = window.innerHeight + window.scrollY >= (document.documentElement.scrollHeight - 2);
-        if (nearBottom && sectionIds.length) current = sectionIds[sectionIds.length - 1];
-
-        if (current) setActive(current);
-      };
-      window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', onScroll);
-      onScroll();
-
-      // two-panel toggle
-      (function () {
+      // Two-panel "Sobre mí" toggle (idempotent)
+      (function twoPanelToggle() {
         const panel1 = q('#sobre-excerpt');
         const panel2 = q('#sobre-more');
         const btnMas = q('#btn-mas-sobre');
@@ -227,8 +235,12 @@ document.addEventListener('DOMContentLoaded', function () {
         panel2.style.display = 'none';
         panel2.setAttribute('aria-hidden', 'true');
         btnMas.style.display = '';
+        function blurIfFocusedInside(el) {
+          try { if (document.activeElement && el.contains(document.activeElement)) document.activeElement.blur(); } catch (e) { }
+        }
         btnMas.addEventListener('click', (e) => {
           e.preventDefault();
+          blurIfFocusedInside(panel1);
           panel1.style.display = 'none'; panel1.setAttribute('aria-hidden', 'true');
           panel2.style.display = ''; panel2.setAttribute('aria-hidden', 'false'); panel2.scrollTop = 0;
           btnMas.style.display = 'none';
@@ -239,6 +251,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         if (btnMenos) btnMenos.addEventListener('click', (e) => {
           e.preventDefault();
+          blurIfFocusedInside(panel2);
           panel2.style.display = 'none'; panel2.setAttribute('aria-hidden', 'true');
           panel1.style.display = ''; panel1.setAttribute('aria-hidden', 'false'); panel1.scrollTop = 0;
           btnMas.style.display = ''; btnMas.focus();
@@ -258,543 +271,168 @@ document.addEventListener('DOMContentLoaded', function () {
       console.warn('init header/nav error', e);
     }
 
-    // ===== FORM: validation + flatpickr (consolidado y único) =====
-    try {
-      const form = document.getElementById('form-cita');
-      if (!form) return;
+    // ===== FORM + AGENDA (migrado a agendar.js) =====
+    // Form + Agenda moved to agendar.js — see c:\Users\diven\OneDrive\Escritorio\Pagina web\agendar.js
+    // ===== Misc UI / payments / viewport fixes =====
 
-      const nombre = document.getElementById('nombre');
-      const email = document.getElementById('email');
-      const fecha = document.getElementById('fecha');
-      const hora = document.getElementById('hora');
-      const reservar = document.getElementById('btn-reservar');
-      const spinner = document.getElementById('btn-spinner');
-      const confirmEl = document.getElementById('confirmacion');
-
-      // Flag para evitar que los listeners limpien el mensaje inmediatamente después del envío/reset
-      let suppressConfirmClear = false;
-
-      // función de validación de email solicitada (usar exactamente)
-      function esEmailValido(emailValue) {
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return regex.test(String(emailValue).trim());
-      }
-
-      // helpers errores inline
-      function clearError(field) {
-        if (!field) return;
-        field.classList.remove('is-invalid');
-        const s = (field.parentElement || field).querySelector('.input-error');
-        if (s) s.remove();
-      }
-      function showError(field, msg) {
-        if (!field) return;
-        clearError(field);
-        field.classList.add('is-invalid');
-        const d = document.createElement('div');
-        d.className = 'input-error';
-        d.setAttribute('role', 'alert');
-        d.textContent = msg;
-        (field.parentElement || field).appendChild(d);
-      }
-
-      // leer fecha (considerar flatpickr altInput o instancia)
-      function readFecha() {
-        try {
-          if (fecha && fecha._flatpickr && Array.isArray(fecha._flatpickr.selectedDates) && fecha._flatpickr.selectedDates.length) {
-            return fecha._flatpickr.selectedDates[0];
-          }
-        } catch (e) {}
-        const alt = q('.flatpickr-input[altinput], .flatpickr-input.altInput, .flatpickr-input');
-        if (alt && alt.value && alt.value.trim()) return alt.value.trim();
-        if (fecha && fecha.value && fecha.value.trim()) return fecha.value.trim();
-        return '';
-      }
-
-      // validadores por campo
-      function validarNombre() {
-        clearError(nombre);
-        if (!nombre || !nombre.value || !nombre.value.trim()) {
-          showError(nombre, 'Ingresa tu nombre completo.');
-          return false;
-        }
-        return true;
-      }
-      function validarEmail() {
-        clearError(email);
-        if (!email || !email.value || !email.value.trim()) {
-          showError(email, 'Ingresa un correo electrónico.');
-          return false;
-        }
-        if (!esEmailValido(email.value)) {
-          showError(email, 'Ingresa un correo válido (ej: usuario@dominio.cl).');
-          return false;
-        }
-        return true;
-      }
-      function validarFecha() {
-        clearError(fecha);
-        if (!readFecha()) {
-          showError(fecha, 'Selecciona una fecha.');
-          return false;
-        }
-        return true;
-      }
-      function validarHora() {
-        clearError(hora);
-        if (!hora || !hora.value || !hora.value.trim()) {
-          showError(hora, 'Selecciona una hora.');
-          return false;
-        }
-        return true;
-      }
-
-      function validarTodo() {
-        const n = validarNombre();
-        const e = validarEmail();
-        const f = validarFecha();
-        const h = validarHora();
-        return n && e && f && h;
-      }
-
-      // activar/desactivar botón según validación (se ejecuta en input/change)
-      // Mantener el botón siempre habilitado: quitar/ignorar cualquier intento de deshabilitar
-      function setDisabled(/* state */) {
-        if (!reservar) return;
-        // Forzar estado habilitado (no desactivar). Esto revierte cambios previos.
-        reservar.removeAttribute('disabled');
-        reservar.setAttribute('aria-disabled', 'false');
-        reservar.style.pointerEvents = 'auto';
-      }
-
-      function updateButton() {
-        try {
-          // validación parcial: no mostrar errores aquí, solo habilitar/inhabilitar
-          const nombreOk = nombre && nombre.value && nombre.value.trim().length > 0;
-          const emailOk = email && esEmailValido(email.value || '');
-          const fechaOk = !!readFecha();
-          const horaOk = hora && hora.value && hora.value.trim().length > 0;
-          // Llamada segura: setDisabled ahora no deshabilita el botón
-          setDisabled(!(nombreOk && emailOk && fechaOk && horaOk));
-        } catch (e) {
-          console.warn('updateButton error', e);
-        }
-      }
-
-      // inicializar flatpickr (reintentos cortos si carga luego)
-      (function initFlat(attempt = 0) {
-        if (!fecha) return;
-        if (window.flatpickr) {
-          try {
-            // asegurar tipo text para evitar comportamiento nativo en algunos móviles
-            try { fecha.type = 'text'; } catch (e) {}
-
-            // calcular fecha máxima = hoy + 14 días
-            const maxDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
-
-            flatpickr(fecha, {
-              altInput: true,
-              altFormat: 'd/m/Y',
-              dateFormat: 'Y-m-d',
-              locale: 'es',
-              minDate: 'today',       // no permitir días anteriores
-              maxDate: maxDate,       // sólo hasta 14 días desde hoy
-              disableMobile: true,
-              onChange: () => {
-                try { clearError(fecha); } catch (e) {}
-                try { updateButton(); } catch (e) {}
-              }
-            });
-
-            // listeners sobre el altInput generado por flatpickr
-            const alt = document.querySelector('.flatpickr-input[altinput], .flatpickr-input.altInput');
-            if (alt) {
-              alt.addEventListener('input', () => { try { updateButton(); } catch(_){} });
-              alt.addEventListener('change', () => { try { updateButton(); } catch(_){} });
-            }
-          } catch (err) {
-            console.warn('flatpickr init error', err);
-          }
-          return;
-        }
-        if (attempt < 20) setTimeout(() => initFlat(attempt + 1), 120);
-      })();
-
-      // listeners para inputs -> validar en tiempo real (email) + limpiar errores y actualizar botón
-      if (nombre) {
-        nombre.addEventListener('input', () => {
-          clearError(nombre);
-          if (!suppressConfirmClear && confirmEl) confirmEl.innerHTML = '';
-          updateButton();
-        });
-        nombre.addEventListener('change', () => {
-          clearError(nombre);
-          if (!suppressConfirmClear && confirmEl) confirmEl.innerHTML = '';
-          updateButton();
-        });
-      }
-
-      if (email) {
-        // validación en marcha: muestra error mientras el usuario escribe si el formato es inválido
-        email.addEventListener('input', () => {
-          // no borrar el mensaje de confirmación si está suprimido
-          if (!suppressConfirmClear && confirmEl) confirmEl.innerHTML = '';
-          const v = email.value || '';
-          if (v && !esEmailValido(v)) {
-            // mostrar error de formato en tiempo real
-            clearError(email);
-            showError(email, 'Formato de correo inválido.');
-          } else {
-            clearError(email);
-          }
-          updateButton();
-        });
-        email.addEventListener('change', () => {
-          // al salir del campo, aplicar validación completa
-          clearError(email);
-          if (!email.value || !email.value.trim()) {
-            showError(email, 'Ingresa un correo electrónico.');
-          } else if (!esEmailValido(email.value)) {
-            showError(email, 'Ingresa un correo válido (ej: usuario@dominio.cl).');
-          }
-          if (!suppressConfirmClear && confirmEl) confirmEl.innerHTML = '';
-          updateButton();
-        });
-      }
-
-      if (fecha) {
-        fecha.addEventListener('input', () => {
-          clearError(fecha);
-          if (!suppressConfirmClear && confirmEl) confirmEl.innerHTML = '';
-          updateButton();
-        });
-        fecha.addEventListener('change', () => {
-          clearError(fecha);
-          if (!suppressConfirmClear && confirmEl) confirmEl.innerHTML = '';
-          updateButton();
-        });
-      }
-
-      if (hora) {
-        hora.addEventListener('input', () => {
-          clearError(hora);
-          if (!suppressConfirmClear && confirmEl) confirmEl.innerHTML = '';
-          updateButton();
-        });
-        hora.addEventListener('change', () => {
-          clearError(hora);
-          if (!suppressConfirmClear && confirmEl) confirmEl.innerHTML = '';
-          updateButton();
-        });
-      }
-
-      // submit handler (REEMPLAZAR la implementación actual por esta para usar EmailJS)
-      form.addEventListener('submit', async function (e) {
-        e.preventDefault();
-        if (confirmEl) confirmEl.innerHTML = '';
-
-        if (!validarTodo()) {
-          if (confirmEl) confirmEl.innerHTML = '<p class="confirm-error">Debes completar todos los campos correctamente para agendar.</p>';
-          return;
-        }
-
-        // preparar datos
-        const fechaVal = (fecha && fecha._flatpickr && fecha._flatpickr.selectedDates.length)
-          ? fecha._flatpickr.selectedDates[0].toISOString()
-          : (document.querySelector('.flatpickr-input[altinput]') || fecha).value || '';
-
-        const templateParams = {
-          nombre: nombre.value.trim(),
-          email: email.value.trim(),
-          fecha: fechaVal,
-          hora: hora.value.trim(),
-          // si tu plantilla usa to_email, puedes conservarlo; si no, eliminar
-          to_email: 'di.venegasc@gmail.com'
-        };
-
-        // mostrar spinner
-        if (spinner) spinner.classList.remove('d-none');
-
-        try {
-          // Service ID que proporcionaste
-          const SERVICE_ID = 'service_wjxgyjn';
-          // Reemplaza por tu TEMPLATE_ID (lo obtienes en Email Templates, p.ej. 'template_abcd1234')
-          const TEMPLATE_ID = 'template_1kkrz0w';
-
-          // Enviar con EmailJS
-          const result = await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams);
-
-          // DEBUG: confirmar que la promesa resolvió
-          console.log('EmailJS send result:', result);
-
-          // ocultar spinner
-          if (spinner) spinner.classList.add('d-none');
-
-          // mostrar mensaje de éxito y evitar que listeners lo borren durante el reset
-          if (confirmEl) {
-            suppressConfirmClear = true;
-            confirmEl.classList.remove('confirm-error', 'text-danger');
-            confirmEl.classList.add('confirm-success', 'text-success');
-            confirmEl.setAttribute('role', 'status');
-            confirmEl.setAttribute('aria-live', 'polite');
-            confirmEl.style.display = 'block';
-            confirmEl.style.color = 'var(--calipso)';
-            confirmEl.textContent = 'Reserva enviada. Revisaremos y te contactaremos.';
-            try { confirmEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
-            // Mantener el mensaje visible unos segundos antes de limpiar y reactivar listeners
-            setTimeout(() => {
-              try { confirmEl.innerHTML = ''; confirmEl.style.display = ''; } catch (e) {}
-              suppressConfirmClear = false;
-            }, 5000);
-          }
-
-          // resetar formulario y calendario (ligero retraso para evitar que borre el mensaje)
-          setTimeout(() => {
-            try { form.reset(); } catch (e) {}
-            try { if (fecha && fecha._flatpickr) fecha._flatpickr.clear(); } catch (e) {}
-            updateButton();
-          }, 200);
-        } catch (err) {
-          // fallback a mailto si falla
-          if (spinner) spinner.classList.add('d-none');
-          console.error('EmailJS error', err);
-          if (confirmEl) confirmEl.innerHTML = '<p class="confirm-error">Error al enviar via EmailJS. Se intentará abrir tu cliente de correo.</p>';
-
-          try {
-            const subject = encodeURIComponent('Nueva reserva - sitio web');
-            const body = encodeURIComponent(
-              `Nombre: ${nombre.value.trim()}\nEmail: ${email.value.trim()}\nFecha: ${fechaVal}\nHora: ${hora.value.trim()}\n\nReservado desde sitio web.`
-            );
-            const mailto = `mailto:di.venegasc@gmail.com?subject=${subject}&body=${body}`;
-            window.location.href = mailto;
-          } catch (mailtoErr) {
-            console.error('Mailto fallback error', mailtoErr);
-            if (confirmEl) confirmEl.innerHTML = '<p class="confirm-error">No se pudo enviar el correo. Intenta nuevamente más tarde.</p>';
-          }
-        }
-      });
-
-    } catch (e) {
-      console.warn('form init error', e);
-    }
-
-  }); // DOMContentLoaded
-})();
-
-(function formModuleRealtimeValidation(){
-  'use strict';
-
-  document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('form-cita');
-    if (!form) return;
-    // Módulo duplicado deshabilitado (ya usamos el handler consolidado con EmailJS arriba)
-    return;
-
-    const nombre = document.getElementById('nombre');
-    const email = document.getElementById('email');
-    const fecha = document.getElementById('fecha');
-    const hora = document.getElementById('hora');
-    const reservar = document.getElementById('btn-reservar');
-    const spinner = document.getElementById('btn-spinner');
-    const confirmEl = document.getElementById('confirmacion');
-
-    function esEmailValido(value) {
-      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return !!(value && typeof value === 'string' && regex.test(value.trim()));
-    }
-
-    function clearError(field) {
-      if (!field) return;
-      field.classList.remove('is-invalid');
-      const s = (field.parentElement || field).querySelector('.input-error');
-      if (s) s.remove();
-    }
-    function showError(field, msg) {
-      if (!field) return;
-      clearError(field);
-      field.classList.add('is-invalid');
-      const d = document.createElement('div');
-      d.className = 'input-error';
-      d.setAttribute('role','alert');
-      d.textContent = msg;
-      (field.parentElement || field).appendChild(d);
-    }
-
-    function readFecha() {
-      try {
-        if (fecha && fecha._flatpickr && Array.isArray(fecha._flatpickr.selectedDates) && fecha._flatpickr.selectedDates.length) {
-          return fecha._flatpickr.selectedDates[0];
-        }
-      } catch (e) {}
-      const alt = document.querySelector('.flatpickr-input[altinput], .flatpickr-input.altInput, .flatpickr-input');
-      if (alt && alt.value && alt.value.trim()) return alt.value.trim();
-      if (fecha && fecha.value && fecha.value.trim()) return fecha.value.trim();
-      return '';
-    }
-
-    // validadores individuales (muestran error en tiempo real)
-    function validarNombre() {
-      clearError(nombre);
-      if (!nombre || !nombre.value || !nombre.value.trim()) {
-        showError(nombre, 'Ingresa tu nombre completo.');
-        return false;
-      }
-      return true;
-    }
-    function validarEmail() {
-      clearError(email);
-      if (!email || !email.value || !email.value.trim()) {
-        showError(email, 'Ingresa un correo electrónico.');
-        return false;
-      }
-      if (!esEmailValido(email.value)) {
-        showError(email, 'Ingresa un correo válido (ej: usuario@dominio.cl).');
-        return false;
-      }
-      return true;
-    }
-    function validarFecha() {
-      clearError(fecha);
-      if (!readFecha()) {
-        showError(fecha, 'Selecciona una fecha.');
-        return false;
-      }
-      return true;
-    }
-    function validarHora() {
-      clearError(hora);
-      if (!hora || !hora.value || !hora.value.trim()) {
-        showError(hora, 'Selecciona una hora.');
-        return false;
-      }
-      return true;
-    }
-
-    // listeners en tiempo real: validan al escribir/salir del campo pero NO deshabilitan el botón
-    if (nombre) {
-      nombre.addEventListener('input', () => { clearError(nombre); });
-      nombre.addEventListener('blur', validarNombre);
-    }
-    if (email) {
-      email.addEventListener('input', () => {
-        clearError(email);
-        // validación en marcha: mostrar error si formato inválido mientras escribe
-        if (email.value && !esEmailValido(email.value)) {
-          clearError(email);
-          showError(email, 'Formato de correo inválido.');
-        } else {
-          clearError(email);
-        }
-      });
-      email.addEventListener('blur', validarEmail);
-    }
-    if (hora) {
-      hora.addEventListener('change', () => { clearError(hora); });
-      hora.addEventListener('blur', validarHora);
-    }
-
-    // inicializar flatpickr sin bloquear y asegurar altInput escucha
-    (function initFlat(attempt = 0) {
-      if (!fecha) return;
-      if (window.flatpickr) {
-        try {
-          // asegurar tipo text para evitar comportamiento nativo en algunos móviles
-          try { fecha.type = 'text'; } catch (e) {}
-
-          // calcular fecha máxima = hoy + 14 días
-          const maxDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
-
-          flatpickr(fecha, {
-            altInput: true,
-            altFormat: 'd/m/Y',
-            dateFormat: 'Y-m-d',
-            locale: 'es',
-            minDate: 'today',
-            maxDate: maxDate,
-            disableMobile: true,
-            onChange: function() {
-              clearError(fecha);
-            }
-          });
-
-          const alt = document.querySelector('.flatpickr-input[altinput], .flatpickr-input.altInput');
-          if (alt) {
-            alt.addEventListener('input', () => clearError(fecha));
-            alt.addEventListener('change', () => clearError(fecha));
-          }
-        } catch (err) { console.warn('flatpickr init error', err); }
-        return;
-      }
-      if (attempt < 20) setTimeout(() => initFlat(attempt + 1), 120);
+    // viewport 100vh fix
+    (function setVh() {
+      const set = () => {
+        const h = (window.visualViewport?.height || window.innerHeight) * 0.01;
+        document.documentElement.style.setProperty('--vh', `${h}px`);
+      };
+      set();
+      window.addEventListener('resize', set);
+      if (window.visualViewport) window.visualViewport.addEventListener('resize', set);
     })();
 
-    // submit: validar todo, mostrar mensaje global si falla, si OK abrir mailto a di.venegasc@gmail.com
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      if (confirmEl) confirmEl.innerHTML = '';
-
-      const okNombre = validarNombre();
-      const okEmail = validarEmail();
-      const okFecha = validarFecha();
-      const okHora = validarHora();
-
-      if (!(okNombre && okEmail && okFecha && okHora)) {
-        if (confirmEl) confirmEl.innerHTML = '<p class="confirm-error">Debes completar todos los campos correctamente para agendar.</p>';
-        const first = form.querySelector('.input-error');
-        if (first) {
-          const fld = first.previousElementSibling || first.parentElement.querySelector('input,select,textarea');
-          if (fld) fld.focus();
-        }
-        return;
+    // payments background loader (idempotent)
+    (function paymentsBg() {
+      const sec = document.querySelector('#pago-seguro, #pago, #pagos');
+      if (!sec) return;
+      if (!sec.classList.contains('payments-section')) sec.classList.add('payments-section');
+      let bg = sec.querySelector(':scope > .block-bg');
+      if (!bg) {
+        bg = document.createElement('div');
+        bg.className = 'block-bg';
+        sec.prepend(bg);
       }
+      const candidates = [
+        './assets/bg-payments.webp',
+        './assets/bg-payments@2x.webp',
+        './assets/bg-payments.jpg',
+        './assets/bg-payments.jpeg',
+        './assets/bg-payments.png'
+      ];
+      const load = (i = 0) => {
+        if (i >= candidates.length) return;
+        const src = candidates[i];
+        const img = new Image();
+        img.onload = () => { bg.style.setProperty('--bg-url', `url("${src}")`); };
+        img.onerror = () => load(i + 1);
+        img.src = src;
+      };
+      load();
+    })();
 
-      // armado de mailto hacia di.venegasc@gmail.com
-      const fechaVal = (fecha && fecha._flatpickr && fecha._flatpickr.selectedDates.length)
-        ? fecha._flatpickr.selectedDates[0].toLocaleString()
-        : ((document.querySelector('.flatpickr-input[altinput]') || fecha) && (document.querySelector('.flatpickr-input[altinput]') || fecha).value);
+    // simple scroll-spy for header nav (idempotent)
+    (function scrollSpy() {
+      const header = document.querySelector('.site-header');
+      const navBtns = Array.from(document.querySelectorAll('.header-nav .nav-btn'));
+      if (!navBtns.length) return;
+      const headerHeight = () => Math.ceil(header?.getBoundingClientRect().height || 0);
+      const setActive = (id) => navBtns.forEach(b => b.classList.toggle('active', b.dataset.target === id));
+      const scrollToId = (id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const top = el.getBoundingClientRect().top + window.scrollY - headerHeight() - 8;
+        window.scrollTo({ top: Math.max(0, Math.floor(top)), behavior: 'smooth' });
+      };
+      navBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const id = btn.dataset.target;
+          if (!id) return;
+          setActive(id);
+          scrollToId(id);
+        });
+      });
+      const sectionIds = navBtns.map(b => b.dataset.target).filter(Boolean);
+      const onScroll = () => {
+        const offset = window.scrollY + headerHeight() + 12;
+        let current = sectionIds[0] || null;
+        for (const id of sectionIds) {
+          const el = document.getElementById(id);
+          if (!el) continue;
+          const top = el.getBoundingClientRect().top + window.scrollY;
+          if (offset >= top - 1) current = id;
+        }
+        const nearBottom = window.innerHeight + window.scrollY >= (document.documentElement.scrollHeight - 2);
+        if (nearBottom && sectionIds.length) current = sectionIds[sectionIds.length - 1];
+        if (current) setActive(current);
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+      onScroll();
+    })();
 
-      const subject = encodeURIComponent('Nueva reserva - sitio web');
-      const body = encodeURIComponent(
-        `Nombre: ${nombre.value.trim()}\nEmail: ${email.value.trim()}\nFecha: ${fechaVal}\nHora: ${hora.value.trim()}\n\nReservado desde sitio web.`
-      );
-      const mailto = `mailto:di.venegasc@gmail.com?subject=${subject}&body=${body}`;
+    // webpay/webpay fallback: idempotent
+    (function webpayFallback() {
+      try {
+        const url = new URL(location.href);
+        ['payment', 'token', 'TBK_TOKEN', 'status', 'provider_status', 'transaction', 'meta'].forEach(k => url.searchParams.delete(k));
+        history.replaceState({}, document.title, url.toString());
+      } catch (_) { }
+      if (document.getElementById('webpay-form')) return;
+      const btnWebpay = document.getElementById('btn-webpay');
+      if (btnWebpay) {
+        const clone = btnWebpay.cloneNode(true);
+        clone.disabled = false;
+        clone.title = 'El pago estará disponible pronto';
+        clone.addEventListener('click', (e) => {
+          e.preventDefault();
+          alert('Pronto integraremos el nuevo flujo de pago. Por ahora este botón no inicia transacciones.');
+        });
+        btnWebpay.replaceWith(clone);
+      }
+    })();
 
-      // abrir cliente de correo
-      window.location.href = mailto;
+    // webpay amount sync
+    (function webpaySync() {
+      const form = document.getElementById('webpay-form');
+      const btn = document.getElementById('btn-webpay');
+      const montoInput = document.getElementById('webpay-monto');
+      if (!form || !btn || !montoInput) return;
+      const syncAmount = () => {
+        let amount = btn.dataset.price || (document.getElementById('precio-servicio')?.textContent || '');
+        amount = String(amount).replace(/[^\d]/g, '');
+        if (amount) montoInput.value = amount;
+      };
+      syncAmount();
+      btn.addEventListener('click', syncAmount);
+      form.addEventListener('submit', syncAmount);
+    })();
 
-      if (spinner) spinner.classList.remove('d-none');
-      setTimeout(() => {
-        if (spinner) spinner.classList.add('d-none');
-        if (confirmEl) confirmEl.innerHTML = '<p class="confirm-success">Se abrió tu cliente de correo para enviar la reserva.</p>';
-        form.reset();
-        try { if (fecha && fecha._flatpickr) fecha._flatpickr.clear(); } catch (e) {}
-      }, 700);
+    // smooth scroll for header nav buttons (compat)
+    document.querySelectorAll('.nav-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        let targetId = btn.dataset.target;
+        // compatibilidad si aún existe algún botón apuntando a "servicios"
+        if (targetId === 'servicios') targetId = 'form-cita-section';
+        const el = document.getElementById(targetId);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
     });
-  });
-})();
 
-// MercadoPago: el botón estilizado dispara el nativo generado por el script oficial
-document.addEventListener('DOMContentLoaded', () => {
-  const styledBtn = document.getElementById('btn-mercadopago');
-  if (!styledBtn) return;
+    // "Agendar ahora" anchors to #form-cita-section
+    (function agendarAhora() {
+      const links = document.querySelectorAll('a[href="#form-cita-section"]');
+      if (!links.length) return;
+      const header = document.querySelector('.site-header');
+      const headerH = () => Math.ceil(header?.getBoundingClientRect().height || 0);
+      const go = (e) => {
+        e.preventDefault();
+        const target = document.getElementById('form-cita-section');
+        if (!target) return;
+        const top = target.getBoundingClientRect().top + window.scrollY - headerH() - 8;
+        window.scrollTo({ top: Math.max(0, Math.floor(top)), behavior: 'smooth' });
+      };
+      links.forEach(a => a.addEventListener('click', go));
+    })();
 
-  const findNativeBtn = () =>
-    document.querySelector('a.mercadopago-button, button.mercadopago-button');
+    // email live validation placeholder (noop)
+    (function emailLiveValidation() { /* intentionally disabled */ })();
 
-  styledBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    const native = findNativeBtn();
-    if (native) native.click();
-    else console.warn('MercadoPago: botón nativo aún no está disponible.');
-  });
-});
+  }); // end DOMContentLoaded
+
+})(); // end module
 
 // Limpieza temporal del flujo Webpay: sin backend ni sandbox
 document.addEventListener('DOMContentLoaded', () => {
   // 1) Limpiar cualquier parámetro de retorno previo en la URL y mensajes
   try {
     const url = new URL(location.href);
-    const paramsToRemove = ['payment','token','TBK_TOKEN','status','provider_status','transaction','meta'];
+    const paramsToRemove = ['payment', 'token', 'TBK_TOKEN', 'status', 'provider_status', 'transaction', 'meta'];
     const hadParams = paramsToRemove.some(k => url.searchParams.has(k));
     if (hadParams) {
       paramsToRemove.forEach(k => url.searchParams.delete(k));
@@ -802,10 +440,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const confirmEl = document.getElementById('confirmacion');
     if (confirmEl) {
-      confirmEl.classList.remove('text-success','text-danger');
+      confirmEl.classList.remove('text-success', 'text-danger');
       if (confirmEl.dataset.userMessage !== '1') confirmEl.textContent = '';
     }
-  } catch (_) {}
+  } catch (_) { }
 
   // FIX: si existe el formulario Webpay real, no interceptar ni clonar el botón
   if (document.getElementById('webpay-form')) {
@@ -860,7 +498,7 @@ document.addEventListener('DOMContentLoaded', function () {
     './assets/bg-payments.png'
   ];
 
-  
+
 
   const load = (i = 0) => {
     if (i >= candidates.length) return;
@@ -928,11 +566,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Limpia posibles parámetros de retorno
   try {
     const url = new URL(location.href);
-    ['payment','token','TBK_TOKEN','status','provider_status','transaction','meta']
+    ['payment', 'token', 'TBK_TOKEN', 'status', 'provider_status', 'transaction', 'meta']
       .forEach(k => url.searchParams.delete(k));
     history.replaceState({}, document.title, url.toString());
-  } catch (_) {}
-
+  } catch (_) { }
   const form = document.getElementById('webpay-form');
   const btnWebpay = document.getElementById('btn-webpay');
 
@@ -1002,3 +639,54 @@ document.addEventListener('DOMContentLoaded', () => {
 
   links.forEach(a => a.addEventListener('click', go));
 });
+
+(function emailLiveValidation() {
+  // Desactivado para evitar el mensaje P1 ("Formato de correo no válido" / "Ingresa tu correo").
+  // La validación y el mensaje P2 quedan a cargo del bloque principal (showError/clearError).
+})();
+
+// Overlay global: helpers + estilos (idempotente)
+(function overlayHelpers() {
+  if (window.showOverlay && window.hideOverlay) return;
+
+  function ensureOverlay() {
+    let ov = document.getElementById('page-loading-overlay');
+    // inyectar estilos una sola vez
+    const styleId = 'page-loading-overlay-style';
+    if (!document.getElementById(styleId)) {
+      const st = document.createElement('style');
+      st.id = styleId;
+      st.textContent = `
+#page-loading-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:saturate(120%) blur(2px);display:none;align-items:center;justify-content:center;z-index:9999}
+#page-loading-overlay .box{background:rgba(255,255,255,.95);color:#0b2533;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.2);padding:20px 24px;min-width:240px;display:flex;align-items:center;gap:14px;border:2px solid var(--calipso,#1aa6b7)}
+#page-loading-overlay .spinner{width:28px;height:28px;border:3px solid rgba(0,0,0,.1);border-top-color:var(--calipso,#1aa6b7);border-radius:50%;animation:spin 1s linear infinite}
+#page-loading-overlay .msg{font-weight:600;color:#0b2533}
+@keyframes spin{to{transform:rotate(360deg)}}
+`;
+      document.head.appendChild(st);
+    }
+    if (!ov) {
+      ov = document.createElement('div');
+      ov.id = 'page-loading-overlay';
+      ov.setAttribute('aria-hidden', 'true');
+      ov.innerHTML = `<div class="box"><div class="spinner" aria-hidden="true"></div><div class="msg">Procesando...</div></div>`;
+      document.body.appendChild(ov);
+    }
+    return ov;
+  }
+
+  window.showOverlay = function (message) {
+    const ov = ensureOverlay();
+    const msg = ov.querySelector('.msg');
+    if (msg && message) msg.textContent = message;
+    ov.style.display = 'flex';
+    ov.setAttribute('aria-hidden', 'false');
+  };
+
+  window.hideOverlay = function () {
+    const ov = document.getElementById('page-loading-overlay');
+    if (!ov) return;
+    ov.style.display = 'none';
+    ov.setAttribute('aria-hidden', 'true');
+  };
+})();
